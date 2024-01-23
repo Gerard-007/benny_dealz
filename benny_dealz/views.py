@@ -20,9 +20,8 @@ class HomeView(View):
     template_name = "index.html"
 
     def get(self, request):
-        user_profile = Profile.objects.filter(user=request.user).first()
         latest_cars = Car.objects.all().order_by("-date")[:6]
-        dealers_in_same_state = Dealer.objects.filter(user__profile__state=user_profile.state)
+        dealers_in_same_state = Dealer.objects.filter(user__profile__state=request.user.profile.state) if request.user.is_authenticated else None
         top_manufacturers = Car.objects.values('manufacturer').annotate(total_cars=Count('id')).order_by('-total_cars')[:6]
         context = {
             "cars": latest_cars,
@@ -65,7 +64,7 @@ class ContactUs(View):
             subject=emailSubject,
             body=emailSubject,
             from_email=settings.SUPPORT_EMAIL,
-            to=["geetechlab@gmail.com", settings.SUPPORT_EMAIL],
+            to=["geetechlab@gmail.com", "dealzbenny@gmail.com", settings.SUPPORT_EMAIL],
             headers={'Reply-To': email, 'format': 'flowed'}
         )
         send_email.attach_alternative(email_template, "text/html")

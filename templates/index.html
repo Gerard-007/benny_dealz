@@ -502,7 +502,7 @@
 <!--    </div>-->
 
 
-    {% if dealers %}
+    {% if request.user.is_authenticated and dealers %}
       <div class="car-dealer pb-120">
         <div class="container">
           <div class="row">
