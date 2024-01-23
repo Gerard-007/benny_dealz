@@ -102,31 +102,44 @@ DATABASES = {
 }
 
 asure_connection_string = config("AZURE_POSTGRESQL_CONNECTIONSTRING")
-parameters = {pair.split("="): pair.split("=")[1] for pair in asure_connection_string.split(' ')}
+parameters = {pair.split("="): pair.split("=")[1] for pair in asure_connection_string.split(' ')} if asure_connection_string else None
 
-DB_USERNAME = config("POSTGRES_USER") or parameters['dbname']
-DB_PASSWORD = config("POSTGRES_PASSWORD") or parameters['password']
-DB_DATABASE = config("POSTGRES_DB") or parameters['']
-DB_HOST = config("POSTGRES_HOST") or parameters['host']
-DB_PORT = config("POSTGRES_PORT") or parameters['']
-DB_IS_AVAIL = all([
-    DB_USERNAME,
-])
-
-POSTGRES_READY = str(os.environ.get('POSTGRES_READY')) == "1"
-
-if DB_IS_AVAIL and POSTGRES_READY:
+POSTGRES_READY = str(config('POSTGRES_READY')) == "1"
+if POSTGRES_READY:
     DATABASES = {
         "default": {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': DB_DATABASE,
-            'USER': DB_USERNAME,
-            'PASSWORD': DB_PASSWORD,
-            'HOST': DB_HOST,
-            'PORT': DB_PORT
+            'NAME': parameters["dbname"],
+            'HOST': parameters["host"],
+            'USER': parameters["user"],
+            'PASSWORD': parameters["password"]
         }
     }
 print(DATABASES)
+
+# DB_USERNAME = config("POSTGRES_USER")
+# DB_PASSWORD = config("POSTGRES_PASSWORD")
+# DB_DATABASE = config("POSTGRES_DB")
+# DB_HOST = config("POSTGRES_HOST")
+# DB_PORT = config("POSTGRES_PORT")
+# DB_IS_AVAIL = all([
+#     DB_USERNAME,
+# ])
+#
+# POSTGRES_READY = str(config('POSTGRES_READY')) == "1"
+#
+# if DB_IS_AVAIL and POSTGRES_READY:
+#     DATABASES = {
+#         "default": {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': DB_DATABASE,
+#             'USER': DB_USERNAME,
+#             'PASSWORD': DB_PASSWORD,
+#             'HOST': DB_HOST,
+#             'PORT': DB_PORT
+#         }
+#     }
+# print(DATABASES)
 
 PROTOCOL = 'https'
 
