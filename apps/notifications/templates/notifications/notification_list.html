@@ -1,0 +1,105 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}{{request.user.username}}{% endblock %}
+
+{% block content %}
+        <div class="l-theme animated-css" data-header="sticky" data-header-top="200" data-canvas="container">
+            <div class="section-title-page area-bg area-bg_dark area-bg_op_70">
+                <div class="area-bg__inner">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h1 class="b-title-page bg-primary_a">Notifications for {{request.user.username}}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end .b-title-page-->
+            <div class="bg-grey">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <ol class="breadcrumb">
+                                <li><a href="{% url 'home' %}"><i class="icon fa fa-home"></i></a>
+                                </li>
+                                <li class="active">Notifications</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end breadcrumb-->
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="cs-user-account-holder">
+                            <div class="row">
+                                <br>
+                                <br>
+                                <br>
+                                <ul class="list-unstyled">
+                                    <h4>All your notifications</h4>
+                                <br>
+                                <br>
+                                    {% for notification in notifications %}
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <a>
+                                                    {% if notification.notification_type == 1 or notification.notification_type == 2 or notification.notification_type == 4 %}
+                                                        <img class="media-object" src="{{ notification.from_user.image_url }}" alt="{{ notification.from_user.username }}">
+                                                        <!-- <img src="{{ notification.from_user.image_url }}" class="mr-3 rounded-circle" alt="{{ notification.from_user.username }}" style="width: 50px; height: 50px;"> -->
+                                                    {% else %}
+                                                        <img class="media-object" src="https://res.cloudinary.com/bennydeals/image/upload/v1629975481/bgs/BennyDealz_jmxhzm.png" alt="Admin">
+                                                        <!-- <img src="https://res.cloudinary.com/bennydeals/image/upload/v1629975481/bgs/BennyDealz_jmxhzm.png" class="mr-3 rounded-circle" alt="Admin" style="width: 50px; height: 50px;"> -->
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                            <div class="media-body">
+                                                {% if notification.notification_type == 5 and request.user.is_a_dealer %}
+                                                    <h6 class="media-heading"><a href="{% url 'cars:detail' notification.car.slug %}">{{ notification.message|safe }}</a></h6>
+                                                {% elif notification.notification_type == 2 %}
+                                                    <h6 class="media-heading"><a href="{% url 'cars:detail' notification.comment.car.slug %}">{{ notification.message|safe }}</a></h6>
+                                                {% elif notification.notification_type == 4 %}
+                                                    <h6 class="media-heading"><a href="#">{{ notification.message|safe }}</a></h6>
+                                                {% else %}
+                                                    <h6 class="media-heading">{{ notification.message|safe }}</h6>
+                                                {% endif %}
+                                                {% if notification.notification_type == 1 or notification.notification_type == 2 or notification.notification_type == 4 %}
+                                                    <small>@{{ notification.from_user }}</small>
+                                                {% else %}
+                                                    <small>{{ notification.from_admin }}</small>
+                                                {% endif %}
+{#                                                <p>{{ notification.text_preview|safe }}...</p>#}
+                                                <br>
+                                                {% if notification.notification_type == 5 and request.user.is_a_dealer %}
+                                                    <small>{{ notification.date|naturaltime }}</small> | <a href="{% url 'notifications:delete' notification.pk %}"><i class="fa fa-trash text-danger"></i>delete</a>
+                                                {% else %}
+                                                    <small>{{ notification.date|naturaltime }}</small> | <a href="{% url 'notifications:user_delete' notification.pk %}"><i class="fa fa-trash text-danger"></i>delete</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% empty %}
+                                        <div class="jumbotron jumbotron-fluid">
+                                          <div class="container">
+                                            <h1 class="display-4"><i class="fa fa-inbox cs-color"></i> Notification Inbox</h1>
+                                            <p class="lead">You currently have no notifications available.</p>
+                                          </div>
+                                        </div>
+                                    {% endfor %}
+                                </ul>
+                                <br>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end layout-theme-->
+
+
+{% endblock %}

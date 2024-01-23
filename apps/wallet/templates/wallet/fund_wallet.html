@@ -1,0 +1,266 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %} wallet {% endblock %}
+
+{% block content %}
+
+    <main class="main">
+        <div class="user-profile py-120">
+            <div class="container">
+                <div class="row">
+                    {% include 'includes/side_navbar.html' %}
+                    <div class="col-lg-9">
+                        <div class="user-profile-wrapper">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-7">
+                                    <div class="blog-author mt-0">
+                                        <div class="author-info">
+                                            <h5 class="mb-4">Fund your wallet</h5>
+                                            <form>
+                                                {% csrf_token %}
+                                                <div class="cart-coupon">
+                                                    <div class="form-group">
+                                                        <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount here" required>
+                                                        <button class="coupon-btn" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Fund Wallet <i class="fa-solid fa-shield-halved"></i></button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Choose Payment Portal</h1>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+
+                                                                <div class="d-grid gap-4">
+                                                                    <button type="button" id="pay_with_paystack" onclick="payWithPaystack()" class="theme-btn p-3">
+                                                                        <img src="{% static 'assets/img/payment/paystack_logo2.png' %}" width="20px" height="20px">
+                                                                        Pay with paystack
+                                                                    </button>
+
+                                                                    <button type="button" id="pay_with_flutterwave" onClick="makePayment()" class="theme-btn p-3">
+                                                                        <img src="{% static 'assets/img/payment/flutterwave_logo.png' %}" width="20px" height="20px">
+                                                                        Pay with flutterwave
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <small class="text-info">
+                                                Fund your wallet with the most secure payment platform,
+                                                please note we do not save you card details or bank details on our platform.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-5">
+                                    {% if wallet.balance >= 500 %}
+                                        <div class="dashboard-widget dashboard-widget-color-3">
+                                    {% else %}
+                                        <div class="dashboard-widget dashboard-widget-color-2">
+                                    {% endif %}
+                                        <div class="dashboard-widget-info">
+                                            <h1>{{ wallet.currency }}{{ wallet.balance }}</h1>
+                                            <span>Wallet Balance</span>
+                                        </div>
+                                        <div class="dashboard-widget-icon">
+                                            <i class="fal fa-money-bill-1"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="user-profile-card">
+                                        <h4 class="user-profile-card-title">Recent Available Cars</h4>
+                                        {% if wallet_transactions %}
+                                            <div class="table-responsive">
+                                                <table class="table text-nowrap" id="data_table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th>Currency</th>
+                                                            <th>Amount</th>
+                                                            <th>Status</th>
+                                                            <th>Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for w in wallet_transactions %}
+                                                            <tr>
+                                                                <td>{{w.transaction_id}}</td>
+                                                                <td>{{w.currency}}</td>
+                                                                <td>{{w.amount|intcomma}}</td>
+                                                                <td>
+                                                                    {% if w.payment_status == "successful" %}
+                                                                        <span class="badge badge-success">{{w.payment_status}}</span>
+                                                                    {% elif w.payment_status == "pending" %}
+                                                                        <span class="badge badge-warning">{{w.payment_status}}</span>
+                                                                    {% elif w.payment_status == "failed" %}
+                                                                        <span class="badge badge-danger">{{w.payment_status}}</span>
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>{{w.timestamp|naturalday}}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <div class="download-area">
+                                                <div class="container">
+                                                    <div class="download-wrapper">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="download-content">
+                                                                    <div class="site-heading">
+                                                                        <span class="site-title-tagline justify-content-start">
+                                                                        <i class="flaticon-drive"></i>
+                                                                        </span>
+                                                                        <h6 class="site-title mb-10">No Transaction Yet</h6>
+                                                                        <p>You currently haven't performed any transaction yet try funding your wallet first.</p>
+                                                                    </div>
+<!--                                                                    <div class="download-btn">-->
+<!--                                                                        <a href="{% url 'cars:create' %}">-->
+<!--                                                                            <i class="fa-solid fa-car"></i>-->
+<!--                                                                            <div class="download-btn-content">-->
+<!--                                                                                <span>Click to</span>-->
+<!--                                                                                <strong>Add</strong>-->
+<!--                                                                            </div>-->
+<!--                                                                        </a>-->
+<!--                                                                    </div>-->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+
+
+
+
+{% block js %}
+    <script>
+        $('#data_table').DataTable({
+            pagingType: 'numbers',
+        });
+    </script>
+
+
+<!--    Pay with Flutterwave-->
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script>
+      function makePayment() {
+        let amount = document.getElementById("amount").value;
+        FlutterwaveCheckout({
+          public_key: "{{ pub_key|safe }}",
+          tx_ref: `bnnydlz_FLW-${+Math.floor((Math.random()*100000)+1)}`,
+          amount: amount,
+          currency: "NGN",
+          country: "NG",
+          payment_options: "card account banktransfer credit",
+
+          // use customer details if user is not logged in, else add user_id to the request
+          customer: {
+            email: "{{ request.user.email }}",
+            name: "{{ wallet.user.profile.get_full_name }}",
+            // phone_number: {% if request.user.profile.phone %} {{ request.user.phone|safe }} {% endif %},
+          },
+          callback: function (response) {
+            console.log(response);
+            showSuccessNotification(response.status + "! your transaction ref is " + response.flw_ref);
+            sendPaymentDataToBackend(response.status, response.currency, response.flw_ref, response.amount, response.tx_ref)
+          },
+          onclose: function () {
+            // close modal
+            swal("Window closed.");
+          },
+          customizations: {
+            title: "BennyDealz",
+            description: "Fund your wallet",
+            logo: "https://res.cloudinary.com/bennydeals/image/upload/v1629975481/bgs/BennyDealz_jmxhzm.png",
+          },
+        });
+      }
+    </script>
+
+
+<!--    Pay with Paystack-->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script>
+		function payWithPaystack() {
+		  const amount = $("#amount").val();
+		  const ref_no = `bnnydlz_PSTK-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`;
+		  var paystackPublicKey = "{{ pstk_pub_key }}";
+
+		  var handler = PaystackPop.setup({
+			key: paystackPublicKey,
+			email: "{{request.user.email}}",
+			amount: amount * 100,
+			currency: 'NGN',
+			ref: ref_no,
+			callback: function(response) {
+			   console.log(response);
+
+			  // Display success message when payment is successful...
+			  showSuccessNotification(`Payment complete! Reference: ${response.reference}`);
+			  sendPaymentDataToBackend(response.status, currency, response.reference, amount, response.transaction)
+			},
+			onClose: function() {
+			  showErrorNotification('Transaction was not completed, window closed.');
+			},
+		  });
+		  handler.openIframe();
+		}
+
+		function sendPaymentDataToBackend(status, currency, reference, amount, transaction_id) {
+		    // Now send order datas to backend...
+            $.ajax({
+                url: `/wallet/fund/${wallet.uid}/`,
+                type: "POST",
+                data: {
+                    'status': status,
+                    'currency': currency,
+                    'reference': reference,
+                    'amount': amount,
+                    'tx_ref': transaction_id,
+                    csrfmiddlewaretoken: "{{csrf_token}}"
+                },
+                success: function (data) {
+                    console.log(data);
+                    if (data.status === "success") {
+                        showSuccessNotification(data.message);
+                        location.reload();
+                    } else {
+                        // Display error message...
+                        showErrorNotification(data.message);
+                    }
+                },
+                error: function (error) {
+                    // Handle error
+                    console.log("Error sending payment data to the backend.");
+                    showErrorNotification(error.message);
+                }
+            });
+		}
+	</script>
+
+{% endblock js %}

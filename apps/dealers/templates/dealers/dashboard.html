@@ -1,0 +1,154 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}Dashboard{% endblock title %}
+
+
+{% block content %}
+    <main class="main">
+        <div class="user-profile py-120">
+            <div class="container">
+                <div class="row">
+                    {% include 'includes/side_navbar.html' %}
+                    <div class="col-lg-9">
+                        <div class="user-profile-wrapper">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="dashboard-widget dashboard-widget-color-1">
+                                        <div class="dashboard-widget-info">
+                                            <h1>{{available_car_count}}</h1>
+                                            <span>Active Listing</span>
+                                        </div>
+                                        <div class="dashboard-widget-icon">
+                                            <i class="fal fa-list"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="dashboard-widget dashboard-widget-color-2">
+                                        <div class="dashboard-widget-info">
+                                            <h1>{{total_view_counts|intword}}</h1>
+                                            <span>Total Views</span>
+                                        </div>
+                                        <div class="dashboard-widget-icon">
+                                            <i class="fal fa-eye"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="dashboard-widget dashboard-widget-color-3">
+                                        <div class="dashboard-widget-info">
+                                            <h1>{{car_count}}</h1>
+                                            <span>Total Listing</span>
+                                        </div>
+                                        <div class="dashboard-widget-icon">
+                                            <i class="fal fa-layer-group"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="user-profile-card">
+                                        <h4 class="user-profile-card-title">Recent Available Cars</h4>
+                                        {% if cars %}
+                                            <div class="table-responsive">
+                                                <table class="table text-nowrap" id="data_table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Car Info</th>
+                                                            <th>Brand</th>
+                                                            <th>Publish</th>
+                                                            <th>Price</th>
+                                                            <th>Views</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for c in cars %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="table-list-info">
+                                                                        <a href="{% url 'cars:detail' c.slug %}">
+                                                                            <img src="{{c.get_main_image}}" alt>
+                                                                            <div class="table-ad-content">
+                                                                                <h6>{{c.get_car_name}}</h6>
+                                                                                <span>Car ID: #{{c.id}}</span>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{c.manufacturer}}</td>
+                                                                <td>{{c.date|naturalday}}</td>
+                                                                <td>NGN{{c.price|intcomma}}</td>
+                                                                <td>{{c.view_count|intword}}</td>
+                                                                <td>
+                                                                    {% if c.status == "Available" %}
+                                                                        <span class="badge badge-success">{{c.status}}</span>
+                                                                    {% elif c.status == "Sold" %}
+                                                                        <span class="badge badge-danger">{{c.status}}</span>
+                                                                    {% elif c.status == "Rented" %}
+                                                                        <span class="badge badge-info">{{c.status}}</span>
+                                                                    {% elif c.status == "Swapped" %}
+                                                                        <span class="badge badge-warning">{{c.status}}</span>
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <div class="download-area">
+                                                <div class="container">
+                                                    <div class="download-wrapper">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="download-content">
+                                                                    <div class="site-heading">
+                                                                        <span class="site-title-tagline justify-content-start">
+                                                                        <i class="flaticon-drive"></i>
+                                                                        </span>
+                                                                        <h6 class="site-title mb-10">No Available Car</h6>
+                                                                        <p>You currently don't have available cars in your selections yet.</p>
+                                                                    </div>
+                                                                    <div class="download-btn">
+                                                                        <a href="{% url 'cars:create' %}">
+                                                                            <i class="fa-solid fa-car"></i>
+                                                                            <div class="download-btn-content">
+                                                                                <span>Click to</span>
+                                                                                <strong>Add</strong>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+<!--                                                        <div class="download-img">-->
+<!--                                                            <img src="https://res.cloudinary.com/bennydeals/image/upload/v1629976365/bgs/BennyDealz_full_axdsgl.png" alt>-->
+<!--                                                        </div>-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        $('#data_table').DataTable({
+            pagingType: 'numbers',
+        });
+    </script>
+{% endblock js %}

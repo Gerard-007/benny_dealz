@@ -1,0 +1,221 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}My Cars{% endblock title %}
+
+
+{% block content %}
+  <main class="main">
+    <div class="user-profile py-120">
+      <div class="container">
+        <div class="row">
+          {% include 'includes/side_navbar.html' %}
+          <div class="col-lg-9">
+            <div class="user-profile-wrapper">
+              <div class="user-profile-card profile-ad">
+                <div class="user-profile-card-header">
+                  <h4 class="user-profile-card-title">Car Swap/Sell Listing</h4>
+                  <div class="user-profile-card-header-right">
+<!--                    <div class="user-profile-search">-->
+<!--                      <div class="form-group">-->
+<!--                        <input type="text" class="form-control" placeholder="Search...">-->
+<!--                        <i class="far fa-search"></i>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <a href="{% url 'cars:create' %}" class="theme-btn">-->
+<!--                      <span class="far fa-plus-circle"></span>-->
+<!--                      Add Listing-->
+<!--                    </a>-->
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  {% if carswaps %}
+                    <div class="table-responsive">
+                      <table class="table text-nowrap" id="data_table">
+                        <thead>
+                          <tr>
+                            <th>Img</th>
+                            <th>Car Info</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Condition</th>
+                            <th>Transmission</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for c in carswaps %}
+                            <tr>
+                              <td>
+                                <div class="table-list-info">
+                                  <img src="{{c.get_car_swap_main_image}}" alt>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="table-list-info">
+                                  <div class="table-list-content">
+                                    <small>{{c.get_car_swap_name}}</small><br>
+                                    <small>Year: {{c.model_year}}</small>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>{{c.price}}</td>
+                              <td>{{c.status}}</td>
+                              <td>{{c.condition}}</td>
+                              <td>{{c.transmission}}</td>
+                              <td>{{c.date|naturalday}}</td>
+                              <td>
+                                <a data-sid="{{c.id}}" id="view_selected_item_button" class="btn btn-outline-secondary btn-sm rounded-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                  <i class="far fa-eye"></i>
+                                </a>
+                                <a data-sid="{{c.id}}" id="delete_selected_item_button" class="btn btn-outline-danger btn-sm rounded-2" data-bs-toggle="tooltip" title="Delete">
+                                    <i class="far fa-trash-can"></i>
+                                </a>
+                              </td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  {% else %}
+                    <div class="download-area">
+                      <div class="container">
+                        <div class="download-wrapper">
+                          <div class="row">
+                            <div class="col-lg-6">
+                              <div class="download-content">
+                                <div class="site-heading">
+                                <span class="site-title-tagline justify-content-start">
+                                <i class="flaticon-drive"></i>
+                                </span>
+                                  <h6 class="site-title mb-10">No Car Swap/Sell Deal</h6>
+                                  <p>No car sell/swap deal available currently.</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!--                                                        <div class="download-img">-->
+                          <!--                                                            <img src="https://res.cloudinary.com/bennydeals/image/upload/v1629976365/bgs/BennyDealz_full_axdsgl.png" alt>-->
+                          <!--                                                        </div>-->
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Update Availability Status</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        $('#data_table').DataTable({
+            pagingType: 'numbers',
+        });
+    </script>
+
+
+    <!-- Update form -->
+    <script>
+      $(document).ready(function() {
+        $("#data_table tbody").on("click", "#update_selected_item_button", function(){
+            let selected_id = $(this).attr("data-sid");
+            console.log(`selected_id: ${selected_id}`)
+            $.ajax({
+                url: "{% url 'cars:update' %}",
+                type: 'GET',
+                data: {
+                    selected_id: selected_id,
+                    status: $("#status").val(),
+                    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                },
+                success: function(response) {
+                  $('#obj_id').val(response.id)
+                  $('#status').val(response.status)
+                  $('#can_be_swapped').prop('checked', response.can_be_swapped)
+                },
+            });
+        });
+      });
+
+      $(document).ready(function() {
+        $("#submit_form").click(function(){
+            let selected_id = $("#obj_id").val();
+            console.log(`selected_id: ${selected_id}`)
+            $.ajax({
+                url: "{% url 'cars:update' %}",
+                type: 'POST',
+                data: {
+                    selected_id: selected_id,
+                    status: $("#status").val(),
+                    can_be_swapped: $("#can_be_swapped").prop('checked'),
+                    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                },
+                success: function(response) {
+                  if (response.status === "success") {
+                    showSuccessNotification(response.message);
+                    setTimeout(function(){
+                      window.location.href="{% url 'dealers:dealer_car_list' %}";
+                    }, 2000);
+                  }
+                },
+            });
+        });
+      });
+    </script>
+
+
+    <!-- Delete all selected check buttons -->
+    <script>
+      $(document).ready(function() {
+        $("#data_table tbody").on("click", "#delete_selected_item_button",function() {
+          let selectedID = $(this).attr("data-sid");
+          console.log(id);
+
+          $.ajax({
+            url: "{% url 'cars:delete' %}",
+            type: 'POST',
+            data: {
+              selectedID: selectedID,
+              csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+            },
+            // contentType: 'application/json',
+            success: function(response) {
+                showSuccessNotification(response.message);
+                if (response.status === "success") {
+                    setTimeout(function(){
+                      window.location.href="{% url 'dealers:dealer_car_list' %}";
+                    }, 2000);
+                }
+            },
+            error: function(response) {
+                showErrorNotification(response.message);
+            }
+          });
+        });
+      });
+    </script>
+{% endblock js %}

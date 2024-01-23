@@ -1,0 +1,468 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content>
+    <meta name="keywords" content>
+
+    <title>{{car}}|benny_dealz</title>
+
+    <link rel="icon" type="image/x-icon" href="https://bit.ly/benny_dealz_logo">
+
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/all-fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/magnific-popup.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/nice-select.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/flex-slider.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  </head>
+
+
+  <body>
+
+    <div class="preloader">
+      <div class="loader-ripple">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- Navbar-->
+    {% include 'includes/navbar.html' %}
+
+    <!-- Sidebar popup-->
+    {% include 'includes/sidebar_popup.html' %}
+
+    <main class="main">
+        <div class="car-item-single bg py-120">
+            <div class="container">
+                <div class="car-single-wrapper">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="car-single-details">
+                                <div class="car-single-widget">
+                                    <div class="car-single-top">
+                                        <span class="car-status status-1">Brand New</span>
+                                        <h3 class="car-single-title">{{car.get_car_name}}</h3>
+                                        <ul class="car-single-meta">
+                                            <li><i class="far fa-clock"></i> Listed On: {{car.date|naturalday}}</li>
+                                            <li><i class="far fa-eye"></i> Views: {{car.view_count}}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="car-single-slider">
+                                        <div class="item-gallery">
+                                            <div class="flexslider-thumbnails">
+                                                <ul class="slides">
+                                                    <li data-thumb="{{car.get_main_image}}">
+                                                        <img src="{{car.get_main_image}}" alt="#">
+                                                    </li>
+                                                    {% for i in car.car_images.all %}
+                                                        <li data-thumb="{{i.image.url}}">
+                                                            <img src="{{i.image.url}}" alt="#">
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="car-single-widget">
+                                    <h4 class="mb-4">Key Information</h4>
+                                    <div class="car-key-info">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-drive"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Body Type</span>
+                                                        <h6>{{car.body_type}}</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-drive"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Condition</span>
+                                                        <h6>{{car.status}}</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-speedometer"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Mileage</span>
+                                                        <h6>{{car.mileage}} (Mi)</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-settings"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Transmission</span>
+                                                        <h6>{{car.transmission}}</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-drive"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Year</span>
+                                                        <h6>{{car.model_year}}</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-gas-station"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Fuel Type</span>
+                                                        <h6>{{car.fuel}}</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-drive"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Inspected</span>
+                                                        {% if car_inspection %}
+                                                            <h6>Yes</h6>
+                                                        {% else %}
+                                                            <h6>No</h6>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-drive"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Seats</span>
+                                                        <h6>{{car.number_of_seats}} Seats</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-drive"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Power</span>
+                                                        <h6>{{car.power}}</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-drive"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Engine Size</span>
+                                                        <h6>{{engine_size}} (cc)</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-6">
+                                                <div class="car-key-item">
+                                                    <div class="car-key-icon">
+                                                        <i class="flaticon-drive"></i>
+                                                    </div>
+                                                    <div class="car-key-content">
+                                                        <span>Number of Cylinders</span>
+                                                        <h6>{{car.number_of_cylinder}}</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="car-single-widget">
+                                    <div class="car-single-overview">
+                                        <h4 class="mb-3">Description</h4>
+                                        <div class="mb-4">
+                                            <p>{{car.description}}</p>
+                                        </div>
+                                        <h4 class="mb-3">Car Features</h4>
+                                        <div class="row mb-3">
+                                            <div class="col-lg-4">
+                                                <ul class="car-single-list">
+                                                    {% if car.coolBox %}
+                                                        <li><i class="far fa-check-circle"></i> Cool Box</li>
+                                                    {% endif %}
+                                                    {% if car.sunroof %}
+                                                        <li><i class="far fa-check-circle"></i> Sun Roof</li>
+                                                    {% endif %}
+                                                    {% if car.DVDSystem %}
+                                                        <li><i class="far fa-check-circle"></i> DVD System</li>
+                                                    {% endif %}
+                                                    {% if car.remoteKey %}
+                                                        <li><i class="far fa-check-circle"></i> Remote Key</li>
+                                                    {% endif %}
+                                                </ul>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <ul class="car-single-list">
+                                                    {% if car.carTracker %}
+                                                        <li><i class="far fa-check-circle"></i> Car Tracker</li>
+                                                    {% endif %}
+                                                    {% if car.parkAssist %}
+                                                        <li><i class="far fa-check-circle"></i> Park Assist</li>
+                                                    {% endif %}
+                                                    {% if car.heatedSeats %}
+                                                        <li><i class="far fa-check-circle"></i> Heated Seats</li>
+                                                    {% endif %}
+                                                    {% if car.parkingSensor %}
+                                                        <li><i class="far fa-check-circle"></i> Parking Sensor</li>
+                                                    {% endif %}
+                                                </ul>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <ul class="car-single-list">
+                                                    {% if car.pushStart %}
+                                                        <li><i class="far fa-check-circle"></i> Push Start</li>
+                                                    {% endif %}
+                                                    {% if car.reverseCamera %}
+                                                        <li><i class="far fa-check-circle"></i> Reverse Camera</li>
+                                                    {% endif %}
+                                                    {% if car.navigationSystem %}
+                                                        <li><i class="far fa-check-circle"></i> Navigation System</li>
+                                                    {% endif %}
+                                                    {% if car.bluetoothHandsFree %}
+                                                        <li><i class="far fa-check-circle"></i> Bluetooth Hands Free</li>
+                                                    {% endif %}
+                                                    {% if car.audioSystem %}
+                                                        <li><i class="far fa-check-circle"></i> Audio System</li>
+                                                    {% endif %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+<!--                                <div class="car-single-widget">-->
+<!--                                    <div class="car-single-review">-->
+<!--                                        <div class="blog-comments mb-0">-->
+<!--                                            <h4>Reviews (05)</h4>-->
+<!--                                            <div class="blog-comments-wrapper">-->
+<!--                                                <div class="blog-comments-single">-->
+<!--                                                    <img src="assets/img/blog/com-1.jpg" alt="thumb">-->
+<!--                                                    <div class="blog-comments-content">-->
+<!--                                                        <h5>Jesse Sinkler</h5>-->
+<!--                                                        <span><i class="far fa-clock"></i> January 31, 2023</span>-->
+<!--                                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>-->
+<!--                                                        <a href="#"><i class="far fa-reply"></i> Reply</a>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="blog-comments-single">-->
+<!--                                                    <img src="assets/img/blog/com-2.jpg" alt="thumb">-->
+<!--                                                    <div class="blog-comments-content">-->
+<!--                                                        <h5>Daniel Wellman</h5>-->
+<!--                                                        <span><i class="far fa-clock"></i> January 31, 2023</span>-->
+<!--                                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>-->
+<!--                                                        <a href="#"><i class="far fa-reply"></i> Reply</a>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="blog-comments-single">-->
+<!--                                                    <img src="assets/img/blog/com-3.jpg" alt="thumb">-->
+<!--                                                    <div class="blog-comments-content">-->
+<!--                                                        <h5>Kenneth Evans</h5>-->
+<!--                                                        <span><i class="far fa-clock"></i> January 31, 2023</span>-->
+<!--                                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>-->
+<!--                                                        <a href="#"><i class="far fa-reply"></i> Reply</a>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="blog-comments-form">-->
+<!--                                                <h4>Leave A Review</h4>-->
+<!--                                                <form action="#">-->
+<!--                                                    <div class="row">-->
+<!--                                                        <div class="col-md-12">-->
+<!--                                                            <div class="form-group car-review-rating">-->
+<!--                                                                <label>Your Rating</label>-->
+<!--                                                                <div>-->
+<!--                                                                    <i class="far fa-star"></i>-->
+<!--                                                                    <i class="far fa-star"></i>-->
+<!--                                                                    <i class="far fa-star"></i>-->
+<!--                                                                    <i class="far fa-star"></i>-->
+<!--                                                                    <i class="far fa-star"></i>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                        <div class="col-md-6">-->
+<!--                                                            <div class="form-group">-->
+<!--                                                                <input type="text" class="form-control" placeholder="Your Name*">-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                        <div class="col-md-6">-->
+<!--                                                            <div class="form-group">-->
+<!--                                                                <input type="email" class="form-control" placeholder="Your Email*">-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                        <div class="col-md-12">-->
+<!--                                                            <div class="form-group">-->
+<!--                                                                <textarea class="form-control" rows="5" placeholder="Your Comment*"></textarea>-->
+<!--                                                            </div>-->
+<!--                                                            <button type="submit" class="theme-btn"><span class="far fa-paper-plane"></span> Submit Review</button>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </form>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="car-single-widget">
+                                <h4 class="car-single-price">₦{{car.price|intcomma}}</h4>
+                                <ul class="car-single-meta">
+                                    <li><i class="fa-regular fa-gauge-high"></i> {{car.mileage|intword}} Miles</li>
+<!--                                    <li><i class="far fa-location-dot"></i> {{car.address}}</li>-->
+                                </ul>
+                            </div>
+                            <div class="car-single-widget">
+                                <div class="car-single-author">
+                                    <img src="{{car.dealer.user.profile.image_url}}">
+                                    <div class="car-single-author-content">
+                                        <h5>{{car.dealer.user.profile.get_full_name}}</h5>
+                                        <span>{{car.dealer.user.email}}</span>
+                                        <span>{{car.dealer.business_phone}}</span>
+<!--                                        <div class="car-single-author-social">-->
+<!--                                            <a href="#"><i class="fab fa-facebook"></i></a>-->
+<!--                                            <a href="#"><i class="fab fa-instagram"></i></a>-->
+<!--                                            <a href="#"><i class="fab fa-twitter"></i></a>-->
+<!--                                            <a href="#"><i class="fab fa-linkedin"></i></a>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+<!--                            <div class="car-single-widget">-->
+<!--                                <h5 class="mb-3">Message Dealer</h5>-->
+<!--                                <div class="car-single-form">-->
+<!--                                    <form>-->
+<!--                                        {% if not request.user.is_authenticated %}-->
+<!--                                            <div class="form-group">-->
+<!--                                                <input type="text" class="form-control" placeholder="Enter Name">-->
+<!--                                            </div>-->
+<!--                                            <div class="form-group">-->
+<!--                                                <input type="text" class="form-control" placeholder="Enter Email">-->
+<!--                                            </div>-->
+<!--                                        {% endif %}-->
+<!--                                        <div class="form-group">-->
+<!--                                            <textarea class="form-control" rows="3" placeholder="Write Message"></textarea>-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group">-->
+<!--                                            <button type="button" class="theme-btn">-->
+<!--                                                Send Now-->
+<!--                                                <i class="fas fa-arrow-right-long"></i>-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+<!--                                    </form>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+                    {% if similar_cars %}
+                        <div class="car-single-related mt-5">
+                            <h3 class="mb-30">Related Listing</h3>
+                            <div class="row">
+                                {% for s in similar_cars %}
+                                    <div class="col-md-6 col-lg-4 col-xl-3">
+                                        <div class="car-item">
+                                            <div class="car-img">
+                                                <span class="car-status status-1">{{s.status}}</span>
+                                                <img src="{{s.main_image}}" alt>
+                                                <div class="car-btns">
+                                                    <button type="button" id="favorite-button" data-car-id="{{c.id}}">
+                                                        <i class="far fa-heart"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="car-content">
+                                                <div class="car-top">
+                                                    <h4><a href="#">{{s.get_car_name}}</a></h4>
+    <!--                                                <div class="car-rate">-->
+    <!--                                                    <i class="fas fa-star"></i>-->
+    <!--                                                    <i class="fas fa-star"></i>-->
+    <!--                                                    <i class="fas fa-star"></i>-->
+    <!--                                                    <i class="fas fa-star"></i>-->
+    <!--                                                    <i class="fas fa-star"></i>-->
+    <!--                                                    <span>5.0 (58.5k Review)</span>-->
+    <!--                                                </div>-->
+                                                </div>
+                                                <ul class="car-list">
+                                                    <li><i class="far fa-steering-wheel"></i>{{s.transmission}}</li>
+                                                    <li><i class="far fa-road"></i>{{s.mileage}} (mil)</li>
+                                                    <li><i class="far fa-car"></i>Model: {{s.model_year}}</li>
+                                                    <li><i class="far fa-gas-pump"></i>{{s.fuel}}</li>
+                                                </ul>
+                                                <div class="car-footer">
+                                                    <span class="car-price">NGN{{s.price}}</span>
+                                                    <a href="{% url 'cars.detail' s.slug %}" class="theme-btn"><span class="far fa-eye"></span>Details</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer-->
+    {% include "includes/footer.html" %}
+
+    <a href="#" id="scroll-top"><i class="far fa-arrow-up"></i></a>
+
+    <script src="{% static 'assets/js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'assets/js/modernizr.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'assets/js/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.appear.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'assets/js/counter-up.js' %}"></script>
+    <script src="{% static 'assets/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'assets/js/wow.min.js' %}"></script>
+    <script src="{% static 'assets/js/flex-slider.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+  </body>
+
+</html>

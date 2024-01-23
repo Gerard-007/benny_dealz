@@ -1,0 +1,308 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}Dashboard{% endblock title %}
+
+
+{% block content %}
+  <main class="main">
+    <div class="user-profile py-120">
+      <div class="container">
+        <div class="row">
+          {% include 'includes/side_navbar.html' %}
+          <div class="col-lg-9">
+            <div class="user-profile-wrapper">
+              <div class="user-profile-card profile-ad">
+                <div class="user-profile-card-header">
+                  <h4 class="user-profile-card-title">My Dealership Addresses</h4>
+                  <div class="user-profile-card-header-right">
+<!--                    <div class="user-profile-search">-->
+<!--                      <div class="form-group">-->
+<!--                        <input type="text" class="form-control" placeholder="Search...">-->
+<!--                        <i class="far fa-search"></i>-->
+<!--                      </div>-->
+<!--                    </div>-->
+                    <a class="theme-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      <span class="far fa-plus-circle"></span>
+                      Add an Address
+                    </a>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  {% if addresses or request.user.profile.address %}
+                    <div class="row">
+
+                      <div class="col-md-7">
+                        <div class="contact-info">
+                          <div class="contact-info-icon">
+                            <i class="fal fa-map-location-dot"></i>
+                          </div>
+                          <div class="contact-info-content">
+                            <h6>{{request.user.profile.get_user_address}}</h6>
+                            <p>
+                              {{request.user.profile.local_area}},<br>
+                              {{request.user.profile.address}},<br>
+                              {{request.user.profile.city}},{{request.user.profile.state}}<br>
+                              {{request.user.profile.country}}<br>
+                            </p>
+                            <div class="d-flex justify-content-evenly">
+                              <a href="{% url 'profiles:profile_detail' request.user.profile.slug %}" data-sid="{{a.id}}" class="btn btn-light">
+                                <i class="fa-solid fa-pen-to-square fa-xl"></i>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% for a in addresses %}
+                      <div class="col-md-7">
+                        <div class="contact-info">
+                          <div class="contact-info-icon">
+                            <i class="fal fa-map-location-dot"></i>
+                          </div>
+                          <div class="contact-info-content">
+                            <h6>{{a.get_dealer_address}}</h6>
+                            <p>
+                              {{a.address_line_1}},<br>
+                              {{a.address_line_2}},<br>
+                              {{a.city}},{{a.state}}<br>
+                              {{a.country}}<br>
+                            </p>
+
+                            <div class="d-flex justify-content-evenly">
+                              <button type="button" data-sid="{{a.id}}" id="update_address" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="fa-solid fa-pen-to-square fa-xl"></i>
+                              </button>
+                              <button type="button" data-sid="{{a.id}}" id="delete_selected_item_button" class="btn btn-light">
+                                <i class="fa-solid fa-trash fa-xl"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                    </div>
+                  {% else %}
+                    <div class="download-area">
+                      <div class="container">
+                        <div class="download-wrapper">
+                          <div class="row">
+                            <div class="col-lg-6">
+                              <div class="download-content">
+                                <div class="site-heading">
+                                  <span class="site-title-tagline justify-content-start">
+                                    <i class="fa-solid fa-map-location-dot py-3"></i>
+                                  </span>
+                                  <h6 class="site-title mb-10">No Address Added</h6>
+                                  <p>You currently haven't added your dealership address for your car deals.</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!--                                                        <div class="download-img">-->
+                          <!--                                                            <img src="https://res.cloudinary.com/bennydeals/image/upload/v1629976365/bgs/BennyDealz_full_axdsgl.png" alt>-->
+                          <!--                                                        </div>-->
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+
+
+                  {% if cars.count > 6 %}
+                      {% include 'includes/pagination.html' %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Address</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            {% csrf_token %}
+            <input type="hidden" id="obj_id" name="obj_id"/>
+            <div class="form-group">
+                <label>Country <small class="text-danger">*</small></label>
+                <select class="form-select" id="country" name="country" disabled>
+                    <option value="Nigeria">Nigeria</option>
+                </select>
+            </div>
+            <div class="form-group mt-3">
+                <label>State <small class="text-danger">*</small></label>
+                <select class="form-select" id="state" name="state">
+                  {% for state in states %}
+                    <option value="{{state}}">{{state}}</option>
+                  {% endfor %}
+                </select>
+            </div>
+            <div class="form-group mt-3">
+                <label>City <small class="text-danger">*</small></label>
+                <select class="form-select" id="city" name="city">
+                    <option value>Choose</option>
+                </select>
+            </div>
+            <div class="form-group mt-3">
+                <label>Area/Locale</label>
+                <input type="text" class="form-control" id="address_line_1" placeholder="Your Area/Locale">
+            </div>
+            <div class="form-group mt-3">
+                <label>Street Address</label>
+                <input type="text" class="form-control" id="address_line_2" placeholder="Street Address...">
+            </div>
+            <div class="form-group mt-3">
+                <label>Postal Code</label>
+                <input type="text" class="form-control" id="postal_code" placeholder="Postal/Area Code">
+            </div>
+            <div class="d-flex align-items-center py-3">
+                <button type="button" id="submit_form" class="theme-btn">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save
+                    <i class="fa-solid fa-spinner fa-spin fa-lg" id="loader" style="display:none"></i>
+                </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block js %}
+    <!--Get car model-->
+    <script>
+        $(document).ready(function() {
+            //__________Get states of each country...
+            $("#state").change(function() {
+                console.log($("#state").val());
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'get_cities' %}",
+                    data: {
+                        country: $("#country").val(),
+                        state: $("#state").val(),
+                        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                    },
+                    success: function (response) {
+                        let cities = response.cities;
+                        $('#city').empty();
+                        $.each(cities, function(index, item)
+                        {
+                            console.log(item);
+                            $("#city").append(`<option value='${item}'>${item}</option>"`);
+                        });
+                        console.log("Models Fetched");
+                    }
+                });
+            });
+        });
+    </script>
+
+
+  <!-- Create Address -->
+    <script>
+        $(document).ready(function() {
+            $("#submit_form").click(function () {
+                $.ajax({
+                  url: "{% url 'dealers:dealer_address_add' %}",
+                  type: 'POST',
+                  data: {
+                    id: $("#obj_id").val(),
+                    //country: $("#country").val(),
+                    state: $("#state").val(),
+                    city: $("#city").val(),
+                    address_line_1: $("#address_line_1").val(),
+                    address_line_2: $("#address_line_2").val(),
+                    postal_code: $("#postal_code").val(),
+                    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                  },
+                  success: function (response) {
+                      if (response.status === "success") {
+                        showSuccessNotification(response.message);
+                        setTimeout(function(){
+                          window.location.href="{% url 'dealers:dealer_address_list' %}";
+                        }, 2000);
+                      }
+                  }
+                });
+            });
+        });
+    </script>
+
+
+    <!-- Update form -->
+    <script>
+      $(document).ready(function() {
+        $("#update_address").click(function(){
+            let id = $(this).attr("data-sid");
+            console.log(id);
+            $.ajax({
+                url: "{% url 'dealers:dealer_address_update' %}",
+                type: 'POST',
+                data: {
+                    id: $(this).attr("data-sid"),
+                    // country: $("#country").val(),
+                    state: $("#state").val(),
+                    city: $("#city").val(),
+                    address_line_1: $("#address_line_1").val(),
+                    address_line_2: $("#address_line_2").val(),
+                    postal_code: $("#postal_code").val(),
+                    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                },
+                success: function(response) {
+                  $('#obj_id').val(response.id)
+                  $('#country').val(response.country)
+                  $('#state').val(response.state)
+                  $('#city').val(response.city)
+                  $('#address_line_1').val(response.address_line_1)
+                  $('#address_line_2').val(response.address_line_2)
+                  $('#postal_code').val(response.postal_code)
+                }
+            });
+        });
+      });
+    </script>
+
+
+    <!-- Delete all selected check buttons -->
+    <script>
+      $(document).ready(function() {
+        $('#delete_selected_item_button').click(function() {
+          const selectedID = ($(this).attr('data-sid'));
+
+          $.ajax({
+            url: "{% url 'dealers:dealer_address_delete' %}",
+            type: 'POST',
+            data: {
+              selectedID: selectedID,
+              csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+            },
+            // contentType: 'application/json',
+            success: function(response) {
+                if (response.status === "success") {
+                    showSuccessNotification(response.message);
+                    setTimeout(function(){
+                      window.location.href="{% url 'dealers:dealer_address_list' %}";
+                    }, 2000);
+                }
+            },
+            error: function(response) {
+                showErrorNotification(response.message);
+            }
+          });
+        });
+      });
+    </script>
+{% endblock js %}

@@ -1,0 +1,376 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}Profile{% endblock title %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'assets/custom/profile_img.css' %}">
+{% endblock css %}
+
+
+{% block content %}
+    <main class="main">
+        <div class="user-profile py-120">
+            <div class="container">
+                <div class="row">
+                    {% include 'includes/side_navbar.html' %}
+
+                    <div class="col-lg-9">
+                        <div class="user-profile-wrapper">
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <div class="user-profile-card">
+                                        <h4 class="user-profile-card-title">Profile Info</h4>
+                                        <div class="user-profile-form">
+                                            <form>
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Full Name</label>
+                                                            <input type="text" class="form-control" id="full_name" name="full_name" value="{% if request.user.profile.full_name %} {{request.user.profile.full_name}} {% endif %}" placeholder="Full Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Email</label>
+                                                            <input type="text" class="form-control" value="{{request.user.email}}" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Gender</label>
+                                                            <select class="form-control" id="gender" name="gender">
+                                                                <option value="Male" {% if request.user.profile.gender == "Male" %} selected {% endif %}>Male</option>
+                                                                <option value="Female" {% if request.user.profile.gender == "Female" %} selected {% endif %}>Female</option>
+                                                                <option value="Others" {% if request.user.profile.gender == "Others" %} selected {% endif %}>Others</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Phone</label>
+                                                            <input type="text" class="form-control" id="phone" name="phone" hx-post="/check_phone/" hx-trigger="keyup" hx-target="#phone-error" value="{% if request.user.profile.phone_number %} {{request.user.profile.phone_number}} {% endif %}" placeholder="Phone">
+                                                            <div id="phone-error"></div>
+                                                        </div>
+                                                    </div>
+                                                    {% if request.user.is_a_dealer %}
+                                                        <h5 class="p-3">Add Your Primary/Main Address</h5>
+                                                    {% endif %}
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>State</label>
+                                                            <select class="form-control" id="state" name="state">
+                                                                {% for state in states %}
+                                                                    {% if request.user.profile.state == state %}
+                                                                        <option value="{{state}}" selected>{{state}}</option>
+                                                                    {% else %}
+                                                                        <option value="{{state}}">{{state}}</option>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>City</label>
+                                                            <select class="form-control" id="city" name="city">
+                                                                {% if request.user.profile.city %}
+                                                                    <option value="{{request.user.profile.city}}" selected>{{request.user.profile.city}}</option>
+                                                                {% endif %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Area/Locale</label>
+                                                            <input type="text" class="form-control" id="local_area" name="local_area" value="{% if request.user.profile.local_area %} {{request.user.profile.local_area}} {% endif %}" placeholder="Area/Locale">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Address</label>
+                                                            <input type="text" class="form-control" id="address" name="address" value="{% if request.user.profile.address %} {{request.user.profile.address}} {% endif %}" placeholder="Address">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" id="submit_update" class="theme-btn my-3">
+                                                    <span class="far fa-user"></span>
+                                                    Update Profile
+                                                    <i class="fa-solid fa-spinner fa-spin fa-lg" id="loader" style="display:none"></i>
+                                                </button>
+
+                                                {% if not request.user.is_a_dealer %}
+                                                    <div class="form-check form-switch py-3">
+                                                        <input class="form-check-input" id="dealer_reg" name="dealer_reg" type="checkbox" role="switch">
+                                                        <label class="form-check-label" for="dealer_reg">Register as a Dealer...</label>
+                                                    </div>
+                                                {% endif %}
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5">
+                                    <div class="user-profile-card">
+                                        <h4 class="user-profile-card-title">Change Password</h4>
+                                        <div class="col-lg-12">
+                                            <div class="user-profile-form">
+                                                <form action="#">
+                                                    <div class="form-group">
+                                                        <label>Old Password</label>
+                                                        <input type="password" class="form-control" placeholder="Old Password">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>New Password</label>
+                                                        <input type="password" class="form-control" placeholder="New Password">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Re-Type Password</label>
+                                                        <input type="password" class="form-control" placeholder="Re-Type Password">
+                                                    </div>
+                                                    <button type="button" class="theme-btn my-3"><span class="far fa-key"></span> Change Password</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if request.user.is_a_dealer %}
+                                    {% include 'dealers/update.html' %}
+                                {% else %}
+                                    {% include 'dealers/signup.html' %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}
+
+
+{% block js %}
+    <!--Get Cities-->
+    <script>
+        $(document).ready(function() {
+            //__________Get states of each country...
+            $("#state").change(function() {
+                console.log($("#state").val());
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'get_cities' %}",
+                    data: {
+                        country: $("#country").val(),
+                        state: $("#state").val(),
+                        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                    },
+                    success: function (response) {
+                        let cities = response.cities;
+                        $('#city').empty();
+                        $.each(cities, function(index, item)
+                        {
+                            console.log(item);
+                            $("#city").append(`<option value='${item}'>${item}</option>"`);
+                        });
+                        console.log("Models Fetched");
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <!--Profile Update...-->
+    <script>
+        $(document).ready(function () {
+          $('#submit_update').click(function() {
+            // Show loader when the Ajax request starts
+            $('#loader').show();
+
+            $.ajax({
+                url: '{% url 'profiles:profile_update' request.user.profile.slug %}',
+                type: 'POST',
+                data: {
+                  full_name: $('#full_name').val(),
+                  gender: $('#gender').val(),
+                  phone: $('#phone').val(),
+                  state: $('#state').val(),
+                  city: $('#city').val(),
+                  local_area: $('#local_area').val(),
+                  address: $('#address').val(),
+                  csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    console.log(response);
+
+                    if (response.status === "success") {
+                        showSuccessNotification(response.message);
+                        setTimeout(function() {
+                            window.location.href = "{% url 'profiles:profile_detail' request.user.profile.slug %}";
+                        }, 5000);
+                    } else {
+                        showErrorNotification(response.message);
+                    }
+                },
+                error: function (error) {
+                    console.log("something went wrong...");
+                },
+                complete: function () {
+                    // Hide loader when the Ajax request is complete, whether it succeeds or fails
+                    $('#loader').hide();
+                }
+            });
+          });
+        });
+    </script>
+
+
+<!--    Dealer Reg Switch...-->
+    <script>
+        $(document).ready(function () {
+            $('#dealer_reg').change(function () {
+                if (this.checked) {
+                    $('.dealer_form').show();
+                } else {
+                    $('.dealer_form').hide();
+                }
+            });
+        });
+    </script>
+
+
+    <!--    Dealer Create / Update-->
+    <script>
+        const dropArea = document.getElementById("drop-area");
+        const imgInputFile = document.getElementById("img-input-file");
+        const imgView = document.getElementById("img-view");
+
+        imgInputFile.addEventListener("change", uploadImage);
+
+        function uploadImage() {
+            const imgFile = imgInputFile.files[0];
+            let imgLink = URL.createObjectURL(imgFile);
+            imgView.style.backgroundImage = `url(${imgLink})`;
+            // imgView.textContent = "";
+            imgView.style.border = 0;
+        }
+
+        dropArea.addEventListener("dragover", function(e){
+            e.preventDefault();
+        });
+
+        dropArea.addEventListener("drop", function(e){
+            e.preventDefault();
+            imgInputFile.files = e.dataTransfer.files;
+            uploadImage();
+        });
+
+        $(document).ready(function () {
+            $("#submit_dealer_create").on("click", function () {
+                $('#spinner-icon').show();
+                $(this).prop("disabled", true);
+
+                const formData = new FormData(); // Create a new FormData object
+
+                // Append all form data to the FormData object
+                formData.append("image", imgInputFile.files[0]);
+                formData.append("business_name", $("#business_name").val());
+                formData.append("business_email", $("#business_email").val());
+                formData.append("business_phone", $("#business_phone").val());
+                formData.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+
+                $.ajax({
+                    url: "{% url 'dealers:dealer_signup' %}",
+                    type: "post",
+                    data: formData, // Use the FormData object
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    beforeSend: function (data) {
+                        console.log(data);
+                    },
+                    success: function (data) {
+                        console.log(data.status);
+                        $("#submit_dealer_update").prop("disabled", false);
+                        $('#spinner-icon').hide();
+
+                        // Redirect User/Guest to another page
+                        if (data.status === "success") {
+                            // Display success message...
+                            showSuccessNotification(data.message);
+                            // Refresh page...
+                            setTimeout(function(){
+                                window.location.href='{% url 'profiles:profile_detail' user.profile.slug %}';
+                            }, 5000);
+                        } else {
+                            // Display error message...
+                            showErrorNotification(data.message);
+                        }
+                    },
+                    complete: function() {
+                      $("#spinner-icon").hide();
+                      $("#submit_dealer_update").prop("disabled", false);
+                    }
+                });
+            })
+        });
+
+        // Update Dealer...
+        $(document).ready(function () {
+            $("#submit_dealer_update").on("click", function () {
+                $('#spinner-icon').show();
+                $(this).prop("disabled", true);
+
+                const formData = new FormData(); // Create a new FormData object
+
+                // Append all form data to the FormData object
+                formData.append("image", imgInputFile.files[0]);
+                formData.append("business_phone", $("#business_phone").val());
+                formData.append("selected_id", $("#selected_id").val());
+                formData.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+
+                console.log($("#selected_id").val());
+
+                $.ajax({
+                    url: "{% url 'dealers:dealer_update' %}",
+                    type: "post",
+                    data: formData, // Use the FormData object
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    beforeSend: function (data) {
+                        console.log(data);
+                    },
+                    success: function (data) {
+                        console.log(data.status);
+                        $("#submit_dealer_update").prop("disabled", false);
+                        $('#spinner-icon').hide();
+
+                        // Redirect User/Guest to another page
+                        if (data.status === "success") {
+                            // Display success message...
+                            showSuccessNotification(data.message);
+                            // Refresh page...
+                            setTimeout(function(){
+                                window.location.href="{% url 'profiles:profile_detail' user.profile.slug %}";
+                            }, 5000);
+                        } else {
+                            // Display error message...
+                            showErrorNotification(data.message);
+                        }
+                    },
+                    complete: function() {
+                      $("#spinner-icon").hide();
+                      $("#submit_dealer_update").prop("disabled", false);
+                    }
+                });
+            })
+        });
+    </script>
+{% endblock js %}

@@ -1,0 +1,167 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Contact{% endblock title %}
+
+
+{% block content %}
+  <main class="main">
+    <div class="contact-area py-120">
+      <div class="container">
+        <div class="contact-content">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="contact-info">
+                <div class="contact-info-icon">
+                  <i class="fal fa-map-location-dot"></i>
+                </div>
+                <div class="contact-info-content">
+                  <h5>Office Address</h5>
+                  <p>25/B Milford, New York, USA</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="contact-info">
+                <div class="contact-info-icon">
+                  <i class="fal fa-phone-volume"></i>
+                </div>
+                <div class="contact-info-content">
+                  <h5>Call Us</h5>
+                  <p>+2 123 4565 789</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="contact-info">
+                <div class="contact-info-icon">
+                  <i class="fal fa-envelopes"></i>
+                </div>
+                <div class="contact-info-content">
+                  <h5>Email Us</h5>
+                  <p><a href="https://live.themewild.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bad3d4dcd5fadfc2dbd7cad6df94d9d5d7">[email&#160;protected]</a></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="contact-info">
+                <div class="contact-info-icon">
+                  <i class="fal fa-alarm-clock"></i>
+                </div>
+                <div class="contact-info-content">
+                  <h5>Open Time</h5>
+                  <p>Mon - Sat (10.00AM - 05.30PM)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-wrapper">
+          <div class="row">
+            <div class="col-lg-6 align-self-center">
+              <div class="contact-img">
+                <img style="height:100%;" src="https://res.cloudinary.com/bennydeals/image/upload/v1630221862/bgs/car-1149997_1280_lxfubs.jpg">
+              </div>
+            </div>
+            <div class="col-lg-6 align-self-center">
+              <div class="contact-form">
+                <div class="contact-form-header">
+                  <h2>Get In Touch</h2>
+                  <p>It is a long established fact that a reader will be distracted by the readable
+                    content of a page randomised words which don't look even slightly when looking at its layout. </p>
+                </div>
+                <form>
+                  {% csrf_token %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        {% if request.user.is_authenticated %}
+                          <input type="text" class="form-control" id="name" value="{{request.user.profile.get_full_name}}" disabled>
+                        {% else %}
+                          <input type="text" class="form-control" id="name" placeholder="Your Name" required>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        {% if request.user.is_authenticated %}
+                          <input type="email" class="form-control" id="email" value="{{request.user.email}}" disabled>
+                        {% else %}
+                          <input type="email" class="form-control" id="email" placeholder="Your Email" required>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="subject" placeholder="Your Subject" required>
+                  </div>
+                  <div class="form-group">
+                    <textarea id="message" cols="30" rows="5" class="form-control" placeholder="Write Your Message"></textarea>
+                  </div>
+                  <button type="button" id="submit_form" class="theme-btn">
+                    <i class="fa-solid fa-spinner fa-spin fa-lg" id="loader" style="display:none"></i>
+                    Send Message
+                    <i class="far fa-paper-plane"></i>
+                  </button>
+  <!--                <div class="col-md-12 mt-3">-->
+  <!--                  <div class="form-messege text-success"></div>-->
+  <!--                </div>-->
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="contact-map">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d96708.34194156103!2d-74.03927096447748!3d40.759040329405195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x4a01c8df6fb3cb8!2sSolomon%20R.%20Guggenheim%20Museum!5e0!3m2!1sen!2sbd!4v1619410634508!5m2!1sen!2s" style="border:0;" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </main>
+{% endblock %}
+
+
+{% block js %}
+  <script>
+    $(document).ready(function () {
+      $('#submit_form').click(function() {
+        // Show loader when the Ajax request starts
+        $('#loader').show();
+
+        const name = $('#name').val();
+        const email = $('#email').val();
+        const subject = $('#subject').val();
+        const message = $('#message').val();
+
+        $.ajax({
+            url: '{% url 'contact' %}',
+            type: 'POST',
+            data: {
+              name: name,
+              email: email,
+              subject: subject,
+              message: message,
+              csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+            },
+            success: function (response) {
+                console.log(response);
+                showSuccessNotification(response.message);
+
+                if (response.status === "success") {
+                  setTimeout(function(){
+                    window.location.href="{% url 'contact' %}";
+                  }, 2000);
+                }
+            },
+            error: function (error) {
+                console.log("something went wrong...");
+            },
+            complete: function () {
+                // Hide loader when the Ajax request is complete, whether it succeeds or fails
+                $('#loader').hide();
+            }
+        });
+      });
+    });
+  </script>
+{% endblock js %}

@@ -1,0 +1,112 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}Login{% endblock title %}
+
+
+{% block content %}
+
+<main class="main">
+
+  <div class="user-profile py-120">
+    <div class="container">
+      <div class="row">
+        {% include 'includes/side_navbar.html' %}
+
+        <div class="col-lg-9">
+          <div class="user-profile-wrapper">
+            <div class="user-profile-card profile-favorite">
+              <h4 class="user-profile-card-title">My Favorites</h4>
+              <div class="row">
+
+                {% for c in cars %}
+                  <div class="col-md-6 col-lg-4">
+                    <div class="car-item">
+                      <div class="car-img">
+                        <span class="car-status status-1">{{c.status}}</span>
+                        <img src="{{c.get_main_image}}" style="height:150px; width:100%">
+                        <div class="car-btns">
+                          <a type="button" id="remove-favorite-button" data-car-id="{{c.id}}">
+                              <i class="far fa-xmark" id="remove_favorite_icon"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="car-content">
+                        <div class="car-top">
+                          <h4><a href="{% url 'cars:detail' c.slug %}">{{c.get_car_name}}</a></h4>
+                        </div>
+                        <ul class="car-list">
+                          <li><i class="far fa-steering-wheel"></i>{{c.transmission}}</li>
+                          <li><i class="far fa-car"></i>Model: {{c.model_year}}</li>
+                          <li><i class="far fa-road"></i>{{c.power}}</li>
+                          <li><i class="far fa-gas-pump"></i>{{c.fuel}}</li>
+                        </ul>
+                        <div class="car-footer">
+                          <span class="car-price">₦{{c.price|intword}}</span>
+                          <a href="{% url 'cars:detail' c.slug %}" class="theme-btn">
+                            <span class="far fa-eye"></span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% empty %}
+                    <div class="download-area">
+                        <div class="container">
+                            <div class="download-wrapper">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="download-content">
+                                            <div class="site-heading mb-4">
+                                                <span class="site-title-tagline justify-content-start">
+                                                <i class="flaticon-drive"></i>
+                                                </span>
+                                                <h6 class="site-title mb-10">No Favourite</h6>
+                                                <p>You currently don't have any favourite car in your selections yet.</p>
+                                            </div>
+                                            <div class="download-btn">
+                                                {% if  request.user.is_a_dealer %}
+                                                    <a href="{% url 'cars:create' %}">
+                                                        <i class="fa-solid fa-car"></i>
+                                                        <div class="download-btn-content">
+                                                            <span>Click to</span>
+                                                            <strong>Add</strong>
+                                                        </div>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{% url 'cars:list' %}">
+                                                        <i class="fa-solid fa-car"></i>
+                                                        <div class="download-btn-content">
+                                                            <span>Click to</span>
+                                                            <strong>View Available Cars</strong>
+                                                        </div>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="download-img">
+                                    <img src="https://res.cloudinary.com/bennydeals/image/upload/v1629976365/bgs/BennyDealz_full_axdsgl.png" alt>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+              </div>
+
+              {% if cars.count > 6 %}
+                  {% include 'includes/pagination.html' %}
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

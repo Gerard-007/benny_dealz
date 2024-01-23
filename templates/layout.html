@@ -1,0 +1,134 @@
+{% load static %}
+{% load cloudinary %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content>
+        <meta name="keywords" content>
+        <title>{% block title %}{% endblock title %}|benny_dealz</title>
+        <link rel="icon" type="image/x-icon" href="https://bit.ly/benny_dealz_logo">
+        <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/all-fontawesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/flaticon.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/animate.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/magnific-popup.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/nice-select.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/iziToast/css/iziToast.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/data_table/datatables.css' %}">
+
+        <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+        {% block css %}
+        {% endblock css %}
+    </head>
+
+    <body>
+        <div class="preloader">
+            <div class="loader-ripple">
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+
+        <!-- Navbar-->
+        {% include 'includes/navbar.html' %}
+
+        <!-- Sidebar popup-->
+        {% include 'includes/sidebar_popup.html' %}
+
+        {% block content %}
+        {% endblock %}
+
+        <!-- Footer-->
+        {% include "includes/footer.html" %}
+
+        <a href="#" id="scroll-top">
+            <i class="far fa-arrow-up"></i>
+        </a>
+
+        <script src="{% static 'assets/js/jquery-3.6.0.min.js' %}"></script>
+        <script src="{% static 'assets/js/modernizr.min.js' %}"></script>
+        <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'assets/js/imagesloaded.pkgd.min.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.magnific-popup.min.js' %}"></script>
+        <script src="{% static 'assets/js/isotope.pkgd.min.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.appear.min.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.easing.min.js' %}"></script>
+        <script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'assets/js/counter-up.js' %}"></script>
+        <script src="{% static 'assets/js/jquery-ui.min.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.nice-select.min.js' %}"></script>
+        <script src="{% static 'assets/js/wow.min.js' %}"></script>
+        <script src="{% static 'assets/js/main.js' %}"></script>
+        <script src="{% static 'assets/custom/common_functions.js' %}"></script>
+        <script src="{% static 'assets/data_table/datatables.js' %}"></script>
+
+        <!-- using iziToast -->
+        <script src="{% static 'assets/iziToast/js/iziToast.min.js' %}"></script>
+        <script src="{% static 'assets/iziToast/notification.js' %}"></script>
+
+        <!-- using HTMX -->
+        <script src="{% static 'assets/htmx/htmx.min.js' %}"></script>
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <script type=text/javascript>
+                        iziToast.show({
+                            theme: "light",
+                            color: "green",
+                            title: "Success",
+                            message: {{message}},
+                            timeout: 10000,
+                            position: "topRight"
+                        });
+                    </script>
+                {% elif message.tags == 'info' %}
+                    <script type=text/javascript>
+                        iziToast.show({
+                            theme: "light",
+                            color: "blue",
+                            title: "Info",
+                            message: {{message}},
+                            timeout: 10000,
+                            position: "topRight"
+                        });
+                    </script>
+                {% elif message.tags == 'warning' %}
+                    <script type=text/javascript>
+                        iziToast.show({
+                            theme: "light",
+                            color: "yellow",
+                            title: "Warning",
+                            message: {{message}},
+                            timeout: 10000,
+                            position: "topRight"
+                        });
+                    </script>
+                {% elif message.tags == 'error' %}
+                    <script type=text/javascript>
+                        iziToast.show({
+                            theme: "light",
+                            color: "red",
+                            title: "Error",
+                            message: {{message}},
+                            timeout: 10000,
+                            position: "topRight"
+                        });
+                    </script>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+
+        {% block js %}
+        {% endblock js %}
+    </body>
+
+</html>

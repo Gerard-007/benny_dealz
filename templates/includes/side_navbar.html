@@ -1,0 +1,52 @@
+<style>
+  #sticky_layout {
+    position: sticky;
+  }
+</style>
+
+
+{% url 'cars:create' as car_create_url %}
+{% url 'profiles:profile_detail' request.user.profile.slug as profile_detail_url %}
+{% url 'cars:list_favorite' as my_favorites %}
+{% url 'dealers:dealer_dashboard' as dealer_dashboard %}
+{% url 'dealers:dealer_car_list' as dealer_car_list %}
+{% url 'dealers:dealer_address_list' as dealer_address_list %}
+{% url 'cars:swap_list' as swap_list %}
+{% url 'wallet:get_wallet' request.user.wallet.uid as get_wallet %}
+
+
+<div class="col-lg-3" id="sticky_layout">
+  <div class="user-profile-sidebar">
+    <div class="user-profile-sidebar-top">
+      <div class="user-profile-img">
+        <img src="{{request.user.profile.image_url}}" style="width:100px; height:100px;">
+      </div>
+      <h5>{{request.user.profile.get_full_name}}</h5>
+      <p>{{request.user.email}}</p>
+      {% if request.user.is_a_dealer %}
+        <p><i class="fa-solid fa-wallet"></i> : ₦0.00</p>
+<!--        <p>{{request.user.wallet.uid}}</p>-->
+<!--        <p>{{request.user.user_dealer}}</p>-->
+      {% endif %}
+    </div>
+    <ul class="user-profile-sidebar-list">
+      {% if request.user.is_superuser %}
+        <li><a href="/admin/"><i class="fa-solid fa-shield-halved"></i> Admin</a></li>
+        <li><a {% if request.path == swap_list %} class="active" {% endif %} href="{{swap_list}}"><i class="fa-solid fa-shuffle"></i> Car Swap/Sell List</a></li>
+      {% endif %}
+      {% if request.user.is_a_dealer %}
+        <li><a {% if request.path == dealer_dashboard %} class="active" {% endif %} href="{{dealer_dashboard}}"><i class="far fa-gauge-high"></i> Dashboard</a></li>
+        <li><a {% if request.path == dealer_car_list %} class="active" {% endif %} href="{{dealer_car_list}}"><i class="far fa-layer-group"></i> My Cars</a></li>
+        <li><a {% if request.path == dealer_address_list %} class="active" {% endif %} href="{{dealer_address_list}}"><i class="far fa-map-pin"></i> My Addresses</a></li>
+        <li><a {% if request.path == car_create_url %} class="active" {% endif %} href="{{car_create_url}}"><i class="far fa-plus-circle"></i> Add Listing</a></li>
+        <li><a {% if request.path == get_wallet %} class="active" {% endif %} href="{{get_wallet}}"><i class="far fa-wallet"></i> Wallet/Transactions</a></li>
+      {% endif %}
+      <li><a {% if request.path == profile_detail_url %} class="active" {% endif %} href="{{profile_detail_url}}"><i class="far fa-user"></i> My Profile</a></li>
+      <li><a {% if request.path == my_favorites %} class="active" {% endif %} href="{{my_favorites}}"><i class="far fa-heart"></i> My Favorites</a></li>
+<!--      <li><a href="#"><i class="far fa-envelope"></i> Messages <span class="badge badge-danger">02</span></a></li>-->
+      <li><a href="{% url 'accounts:logout' %}"><i class="far fa-sign-out"></i> Logout</a></li>
+      <!--<li><a href="#"><i class="far fa-gear"></i> Settings</a></li>-->
+    </ul>
+  </div>
+</div>
+                

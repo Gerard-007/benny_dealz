@@ -1,0 +1,180 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Dealers{% endblock title %}
+
+{% block content %}
+    <main class="main">
+        <div class="dealer-single bg py-120">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="dealer-banner">
+                            <div class="dealer-banner-img">
+                                <img src="{% static 'assets/img/store/banner.jpg' %}" alt>
+                            </div>
+                            <div class="dealer-banner-content">
+                                <div class="dealer-banner-logo">
+                                    <img src="{{dealer.get_business_logo}}" alt>
+                                </div>
+                                <div class="dealer-banner-info">
+                                    <h4>{{dealer.business_name}}</h4>
+                                    <span>{{my_cars.count}} Car Listed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 mt-5">
+                        <div class="col-md-12">
+                            <div class="car-sort">
+                                <h6>Showing 1-10 of {{my_cars.count}} Results</h6>
+                                <div class="col-md-3 car-sort-box">
+                                    <select class="select">
+                                        <option value="5">Sort By Featured</option>
+                                        <option value="2">Sort By Latest</option>
+                                        <option value="3">Sort By Low Price</option>
+                                        <option value="4">Sort By High Price</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            {% for c in my_cars %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="car-item">
+                                        <div class="car-img">
+                                            <span class="car-status status-1">{{c.status}}</span>
+                                            <img src="{{c.get_main_image}}" style="height:150px; width:100%">
+                                            <div class="car-btns">
+                                                <a type="button" id="favorite-button" data-car-id="{{c.id}}">
+                                                    {% if request.user in c.favorited_by.all %}
+                                                        <i class="fas fa-xmark" id="remove_favorite_icon"></i>
+                                                    {% else %}
+                                                        <i class="far fa-heart" id="add_favorite_icon"></i>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="car-content">
+                                            <div class="car-top">
+                                                <h4><a href="{% url 'cars:detail' c.slug %}">{{c.get_car_name}}</a></h4>
+                                            </div>
+                                            <ul class="car-list">
+                                                <li><i class="far fa-steering-wheel"></i>{{c.transmission}}</li>
+                                                <li><i class="far fa-road"></i>{{c.power}}</li>
+                                                <li><i class="far fa-car"></i>Model: {{c.model_year}}</li>
+                                                <li><i class="far fa-gas-pump"></i>{{c.fuel}}</li>
+                                            </ul>
+                                            <div class="car-footer">
+                                                <span class="car-price">₦{{c.price|intcomma}}</span>
+                                                <a href="{% url 'cars:detail' c.slug %}" class="theme-btn"><span class="far fa-eye"></span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="download-area mb-120">
+                                    <div class="container">
+                                        <div class="download-wrapper">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="download-content">
+                                                        <div class="site-heading mb-4">
+                                                            <span class="site-title-tagline justify-content-start">
+                                                            <i class="flaticon-drive"></i> welcome to Benny Dealz
+                                                            </span>
+                                                            <h6 class="site-title mb-10">do visit often for updates</h6>
+                                                            <p>
+                                                                Dear guests & users this dealer currently have no car deals
+                                                                as of now, please do visit often for updates.
+                                                            </p>
+                                                        </div>
+                                                        <div class="download-btn">
+                                                            {% if dealer.user == request.user %}
+                                                                <a href="{% url 'cars:create' %}">
+                                                                    <i class="fa-solid fa-car"></i>
+                                                                    <div class="download-btn-content">
+                                                                        <span>Click to</span>
+                                                                        <strong>Add</strong>
+                                                                    </div>
+                                                                </a>
+                                                            {% else %}
+                                                                <a href="{% url 'contact' %}">
+                                                                    <i class="fa-solid fa-envelope"></i>
+                                                                    <div class="download-btn-content">
+                                                                        <span>Click to</span>
+                                                                        <strong>Message Us</strong>
+                                                                    </div>
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="download-img">
+                                                <img src="https://res.cloudinary.com/bennydeals/image/upload/v1629976365/bgs/BennyDealz_full_axdsgl.png" alt>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                            {% if dealer.cars.count > 6 %}
+                                {% include 'includes/pagination.html' %}
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-5">
+                        <div class="car-single-widget">
+                            <div class="car-single-author">
+                                <img src="{{dealer.user.profile.image_url}}" alt>
+                                <div class="car-single-author-content">
+                                    <h5>{{dealer.user.profile.get_full_name}}</h5>
+                                    <span>{{dealer.business_email}}</span><br>
+                                    <span>{{dealer.business_phone}}</span>
+<!--                                    <div class="car-single-author-social">-->
+<!--                                        <a href="#"><i class="fab fa-facebook"></i></a>-->
+<!--                                        <a href="#"><i class="fab fa-instagram"></i></a>-->
+<!--                                        <a href="#"><i class="fab fa-twitter"></i></a>-->
+<!--                                        <a href="#"><i class="fab fa-linkedin"></i></a>-->
+<!--                                    </div>-->
+                                </div>
+                            </div>
+                        </div>
+<!--                        <div class="car-single-widget">-->
+<!--                            <h5 class="mb-3">Contact Details</h5>-->
+<!--                            <div class="car-single-form">-->
+<!--                                <form>-->
+<!--                                    {% if not request.user.is_authenticated %}-->
+<!--                                        <div class="form-group">-->
+<!--                                            <input type="text" class="form-control" placeholder="Enter Name">-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group">-->
+<!--                                            <input type="text" class="form-control" placeholder="Enter Email">-->
+<!--                                        </div>-->
+<!--                                    {% endif %}-->
+<!--                                    <div class="form-group">-->
+<!--                                        <textarea class="form-control" rows="3" placeholder="Write Message"></textarea>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-group">-->
+<!--                                        <button type="button" class="theme-btn">-->
+<!--                                            Send Now-->
+<!--                                            <i class="fas fa-arrow-right-long"></i>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+{% endblock %}
+
+{% block js %}
+{% endblock js %}

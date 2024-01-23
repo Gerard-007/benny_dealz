@@ -1,0 +1,76 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Dealers{% endblock title %}
+
+{% block content %}
+    <main class="main">
+        <div class="car-area bg py-120">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="car-sidebar">
+                            <div class="car-widget">
+                                <div class="car-search-form">
+                                    <h4 class="car-widget-title">Search</h4>
+                                    <form action="#">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Search">
+                                            <button type="search"><i class="far fa-search"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-9">
+                        <div class="col-md-12">
+                            <div class="car-sort">
+                                <h6>Showing 1-6 of {{dealers.count}} Results</h6>
+                                <div class="col-md-3 car-sort-box">
+                                    <select class="select">
+                                        <option value="1">Sort By Default</option>
+                                        <option value="5">Sort By Featured</option>
+                                        <option value="2">Sort By Latest</option>
+                                        <option value="3">Sort By Popular</option>
+                                        <option value="4">Sort By Most Rated</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {% for d in dealers %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="dealer-item">
+                                        <div class="dealer-img">
+                                            <span class="dealer-listing">{{d.total_cars}} Listing</span>
+                                            <img src="{{d.get_business_logo}}" style="height:150px; width:100%">
+                                        </div>
+                                        <div class="dealer-content">
+                                            <h4><a href="{% url 'dealers:dealer_detail' d.slug %}">{{d.business_name}}</a></h4>
+                                            <ul>
+                                                <li><i class="far fa-envelope"></i> {{d.business_email}}</li>
+                                                <li><i class="far fa-phone"></i> <a href="tel:{{d.business_phone}}">{{d.business_phone}}</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if dealers.count > 6 %}
+                            {% include 'includes/pagination.html' %}
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+{% endblock %}
+
+{% block js %}
+{% endblock js %}

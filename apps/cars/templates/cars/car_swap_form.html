@@ -1,0 +1,177 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block title %}Swap car{% endblock title %}
+
+{% block content %}
+    <main class="main">
+        <div class="login-area py-120">
+            <div class="container">
+                <div class="col-md-6 mx-auto">
+                    <div class="login-form">
+                        <div class="login-header">
+                            <img src="https://bit.ly/benny_dealz_logo" style="width:50px; height:50px;" alt="logo">
+                            <p>Swap/Sell your car fast, at the best price!</p>
+                        </div>
+                        <form id="swap_form" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>Make/Brand <small class="text-danger">*</small></label>
+                                <select class="nice-select" id="car_brand" name="car_brand">
+                                    <option value>Choose</option>
+                                    {% for model in models %}
+                                        <option value="{{model}}">{{model}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label>Model <small class="text-danger">*</small></label>
+                                <select class="nice-select" id="car_model" name="car_model">
+                                    <option value>Choose</option>
+                                </select>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label>Year <small class="text-danger">*</small></label>
+                                {% render_field form.model_year|attr:"required" class="nice-select" placeholder=form.model_year.help_text %}
+                            </div>
+                            <div class="form-group mt-3">
+                                <label>Body Type <small class="text-danger">*</small></label>
+                                {% render_field form.body_type|attr:"required" class="nice-select" placeholder=form.body_type.help_text %}
+                            </div>
+                            <div class="form-group mt-3">
+                                <label>Status <small class="text-danger">*</small></label>
+                                {% render_field form.status|attr:"required" class="nice-select" placeholder=form.status.help_text %}
+                            </div>
+                            <div class="form-group mt-3" id="price_display" style="display:none">
+                                <label>Price <small class="text-danger">*</small></label>
+                                {% render_field form.price class="form-control" placeholder=form.price.help_text %}
+                            </div>
+                            <div class="form-group mt-3">
+                                <label>Condition <small class="text-danger">*</small></label>
+                                {% render_field form.condition|attr:"required" class="nice-select" placeholder=form.condition.help_text %}
+                            </div>
+                            <div class="form-group mt-3 mb-5">
+                                <label>Transmission <small class="text-danger">*</small></label>
+                                {% render_field form.transmission|attr:"required" class="nice-select" placeholder=form.transmission.help_text %}
+                            </div>
+                            <div class="form-group mt-5">
+                                <label>Car image <small class="text-danger"></small></label>
+                                {% render_field form.image accept="image/*" class="form-control" placeholder=form.transmission.help_text %}
+                            </div>
+
+                            <div class="d-flex align-items-center m-2">
+                                <button type="button" id="submit_form" class="theme-btn">
+                                    <i class="far fa-paper-plane"></i>
+                                    Submit
+                                    <i class="fa-solid fa-spinner fa-spin fa-lg" id="loader" style="display:none"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+
+{% block js %}
+<!--    Sell car switch-->
+    <script>
+        $(document).ready(function () {
+            $('#id_status').change(function () {
+                if (this.value === 'Sell') {
+                    $('#price_display').show();
+                } else {
+                    $('#price_display').hide();
+                }
+            });
+        });
+    </script>
+
+
+    <!--Get car model-->
+    <script>
+        $(document).ready(function() {
+            //__________Get states of each country...
+            $("#car_brand").change(function() {
+                console.log($("#car_brand").val());
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'get_car_brand_models' %}",
+                    data: {
+                        brand: $("#car_brand").val(),
+                        csrfmiddlewaretoken:  "{{csrf_token}}"
+                    },
+                    success: function (response) {
+                        let models = response.models;
+                        $('#car_model').empty();
+                        $.each(models, function(index, item)
+                        {
+                            console.log(item);
+                            $("#car_model").append(`<option value='${item}'>${item}</option>"`);
+                        });
+                        console.log("Models Fetched");
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            $("#submit_form").click(function () {
+                $("#loader").show();
+
+                let car_brand = $("#car_brand").val();
+                let car_model = $("#car_model").val();
+                let model_year = $("#id_model_year").val();
+                let body_type = $("#id_body_type").val();
+                let status = $("#id_status").val();
+                let condition = $("#id_condition").val();
+                let transmission = $("#id_transmission").val();
+                let price = $("#id_price").val();
+                let image = $("#id_image")[0].files[0];
+
+                let formData = new FormData();
+
+                formData.append('car_brand', car_brand);
+                formData.append('car_model', car_model);
+                formData.append('model_year', model_year);
+                formData.append('body_type', body_type);
+                formData.append('status', status);
+                formData.append('condition', condition);
+                formData.append('transmission', transmission);
+                formData.append('price', price);
+                formData.append('image', image);
+
+                // Send to backend...
+                $.ajax({
+                    url: "{% url 'cars:swap_create' %}",
+                    type: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        console.log(data.message);
+                        if (data.status === "success") {
+                            $("#loader").hide();
+                            setTimeout(function () {
+                                window.location.href = "{% url 'home' %}";
+                            }, 5000);
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock js %}

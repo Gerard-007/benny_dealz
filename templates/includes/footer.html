@@ -1,0 +1,86 @@
+<!-- Footer-->
+<footer class="footer-area">
+    <div class="footer-widget">
+        <div class="container">
+            <div class="row footer-widget-wrapper pt-50 pb-50">
+                <div class="col-md-6 col-lg-4">
+                    <div class="footer-widget-box about-us">
+                        <a href="#" class="footer-logo">
+                            <img src="https://bit.ly/benny_dealz_logo" style="width:50px; height:50px" alt>
+                        </a>
+                        <p class="mb-3">
+                            BennyDealz Car Dealership offers a premium selection of quality vehicles from top brands,
+                            providing customers with a diverse range of options.
+                            With a commitment to excellence and customer satisfaction.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="footer-widget-box list">
+                        <h4 class="footer-widget-title">Contact</h4>
+                        <ul class="footer-contact">
+                            <li><a href="tel:+2348168375224"><i class="far fa-phone"></i>+2348168375224</a></li>
+                            <li><i class="far fa-map-marker-alt"></i>Abakaliki Ebonyi Nigeria</li>
+                            <li><a href="{% url 'contact' %}"><i class="far fa-envelope"></i><span class="__cf_email__">support@bennydealz.com</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="footer-widget-box list">
+                        <h4 class="footer-widget-title">Quick Links</h4>
+                        <ul class="footer-list">
+                            <li><a href="#"><i class="fas fa-caret-right"></i> Terms Of Service</a></li>
+                            <li><a href="#"><i class="fas fa-caret-right"></i> Privacy policy</a></li>
+                            <li><a href="{% url 'dealers:dealer_list' %}"><i class="fas fa-caret-right"></i> Our Dealers</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-2">
+                    <div class="footer-widget-box list">
+                        <h4 class="footer-widget-title">Support Center</h4>
+                        <ul class="footer-list">
+                            <li><a href="#"><i class="fas fa-caret-right"></i> FAQ's</a></li>
+                            <li><a href="{% url 'cars:swap_create' %}"><i class="fas fa-caret-right"></i> Sell Your Vehicles</a></li>
+                            <li><a href="{% url 'contact' %}"><i class="fas fa-caret-right"></i> Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+<!--                <div class="col-md-6 col-lg-3">-->
+<!--                    <div class="footer-widget-box list">-->
+<!--                        <h4 class="footer-widget-title">Newsletter</h4>-->
+<!--                        <div class="footer-newsletter">-->
+<!--                            <p>Subscribe Our Newsletter To Get Latest Update And News</p>-->
+<!--                            <div class="subscribe-form">-->
+<!--                                <form action="#">-->
+<!--                                    <input type="email" class="form-control" placeholder="Your Email">-->
+<!--                                    <button class="theme-btn" type="button" id="news_letters">-->
+<!--                                        Subscribe Now <i class="far fa-paper-plane"></i>-->
+<!--                                    </button>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+    <div class="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 align-self-center">
+                    <p class="copyright-text">
+                        &copy; Copyright <span id="date"></span> <a href="#"> BennyDealz </a> All Rights Reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 align-self-center">
+                    <ul class="footer-social">
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                        <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

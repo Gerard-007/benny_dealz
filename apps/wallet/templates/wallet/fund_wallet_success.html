@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %} fund_wallet {% endblock %}
+
+{% block content %}
+    <div class="section-title-page area-bg area-bg_dark area-bg_op_70">
+        <div class="area-bg__inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h2 class="b-title-page bg-primary_a">Fund was added to you wallet successfully</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end .b-title-page-->
+    <br>
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+              <h3><small>You wallet balance:</small> NGN{{ balance }}</h3>
+                <p class="section-form-contacts__info">
+                    Fund your wallet with the most secure payment platform,
+                    please note we do not save you card details or bank details on our platform.
+                </p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

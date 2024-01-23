@@ -1,0 +1,113 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}Uploaded Cars{% endblock title %}
+
+
+{% block content %}
+
+        <div class="l-theme animated-css" data-header="sticky" data-header-top="200" data-canvas="container">
+
+            <div class="section-title-page area-bg area-bg_dark area-bg_op_70">
+                <div class="area-bg__inner">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h1 class="b-title-page bg-primary_a">My Uploaded Cars</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <main class="l-main-content">
+            {% if dealer.name == request.user and car_dealer.dealer.name == request.user %}
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="ui-title-block">{{ car_dealer.dealer.business_name }}</h2>
+                            <div class="ui-subtitle-block">Balance: NGN{{ dealer.wallet.balance|intcomma }}</div>
+                            <div class="ui-decor"></div>
+                            <br>
+                            <br>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="table-container">
+                                <table class="table table_primary table-type-1">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Inspected</th>
+                                            <th>Status</th>
+                                            <th>Price</th>
+                                            <th>Featured</th>
+                                            <th>Condition</th>
+                                            <th>Body</th>
+                                            <th>Mileage</th>
+                                            <th>Transmission</th>
+                                            <th>Power</th>
+                                            <th>Engine</th>
+{#                                            <th>Seats</th>#}
+                                            <th>Fuel</th>
+                                            <th>Date Added</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for car in dealer_uploaded_cars %}
+                                        <tr>
+                                            <td>{{ car.pk }}</td>
+                                            <td>{{ car.get_car_name }}</td>
+                                            <td class="text-center">
+                                                {% if car.car_inspection %}
+                                                    <i class="text-success fa fa-check-circle"></i>
+                                                {% else %}
+                                                    <i class="text-danger fa fa-times-circle"></i>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">{{ car.status }}</td>
+                                            <td>₦{{ car.price|intcomma }}</td>
+                                            <td class="text-center">
+                                                {% if car.is_featured %}
+                                                    <i class="text-success fa fa-check-circle"></i>
+                                                {% else %}
+                                                    <a class="btn btn-primary btn-xs" href="{% url 'cars:car_featuring' %}" type="button">Upgrade(₦500)</a>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ car.condition }}</td>
+                                            <td>{{ car.body_type }}</td>
+                                            <td>{{ car.mileage }}km</td>
+                                            <td>{{ car.transmission }}</td>
+                                            <td>{{ car.power }}hp</td>
+                                            <td>{{ car.engine_size }}cc</td>
+{#                                            <td>{{ car.number_of_seats }}</td>#}
+                                            <td>{{ car.fuel }}</td>
+                                            <td>{{ car.date }}</td>
+                                            <td>
+                                                <a class="btn btn-primary btn-xs" href="{% url 'cars:delete' car.slug %}">
+                                                   Delete <i class="fa fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% include "includes/pagination.html" %}
+                    </div>
+                </div>
+            {% else %}
+
+            {% endif %}
+            </main>
+
+        </div>
+        <!-- end layout-theme-->
+
+
+{% endblock %}

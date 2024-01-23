@@ -1,0 +1,526 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+
+{% block title %}Upload Car{% endblock title %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'assets/custom/multi_upload_v2.css' %}">
+
+    <style>
+        .car-select {
+            width: 100%;
+            height: 55px;
+            line-height: 54px;
+            border-radius: 10px;
+            font-size: 16px;
+            color: #757F95;
+            padding-left: 20px;
+        }
+
+        .car-select::after {
+            width: 9px;
+            height: 9px;
+            right: 20px;
+            margin-top: -7px
+        }
+
+        .car-select:focus {
+            border-color: #FFC711;
+        }
+
+        .car-select .list {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 40px 5px rgb(0 0 0/5%)
+        }
+
+        .car-select .option.focus,.car-select .option.selected.focus,.car-select .option:hover {
+            border-radius: 8px;
+            background: rgba(239,23,33,.05);
+            color: #FFC711;
+        }
+    </style>
+{% endblock css %}
+
+
+{% block content %}
+    <main class="main">
+        <div class="user-profile py-120">
+            <div class="container">
+                <div class="row">
+                    {% include 'includes/side_navbar.html' %}
+
+                    <div class="col-lg-9">
+                        <div class="user-profile-wrapper">
+                            <div class="user-profile-card">
+                                <h4 class="user-profile-card-title">Add New Listing</h4>
+                                <div class="col-lg-12">
+                                    <div class="add-listing-form">
+                                        <h6 class="mb-1">Basic Information</h6>
+                                        <form method="post" action="{% url 'cars:create' %}" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="row align-items-center">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Make/Brand <small class="text-danger">*</small></label>
+                                                        <select class="select" id="car_brand" name="car_brand">
+                                                            <option value>Choose</option>
+                                                            {% for model in models %}
+                                                                <option value="{{model}}">{{model}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Model <small class="text-danger">*</small></label>
+                                                        <select class="nice-select" id="car_model" name="car_model">
+                                                            <option value>Choose</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                        <label>Year <small class="text-danger">*</small></label>
+                                                        {% render_field form.model_year|attr:"required" class="select" placeholder=form.model_year.help_text %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                        <label>Condition <small class="text-danger">*</small></label>
+                                                        {% render_field form.condition|attr:"required" class="select" placeholder=form.condition.help_text %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                        <label>Body Type <small class="text-danger">*</small></label>
+                                                        {% render_field form.body_type|attr:"required" class="select" placeholder=form.body_type.help_text %}
+                                                    </div>
+                                                </div>
+
+                                                <h6 class="fw-bold mt-4 mb-1">Upload Images</h6>
+                                                <div class="col-lg-12">
+                                                    <div class="upload-card">
+                                                        <div class="upload-form">
+                                                            <span class="inner">Drag and drop images here or
+                                                                <span class="car_select">Browse</span>
+                                                                <input name="file" type="file" class="file" multiple accept="image/*" required>
+                                                            </span>
+                                                        </div>
+                                                        <div class="img-container">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Mileage <small class="text-danger">*</small></label>
+                                                        {% render_field form.mileage|attr:"required" class="form-control" placeholder=form.mileage.help_text %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Power <small class="text-danger">*</small></label>
+                                                        {% render_field form.power|attr:"required" class="form-control" placeholder=form.power.help_text %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Transmission <small class="text-danger">*</small></label>
+                                                        {% render_field form.transmission|attr:"required" class="select" placeholder=form.transmission.help_text %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Engine Size <small class="text-danger">*</small></label>
+                                                        {% render_field form.engine_size|attr:"required" class="form-control" placeholder=form.engine_size.help_text %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Num of Cylinders <small class="text-danger">*</small></label>
+                                                        {% render_field form.number_of_cylinder|attr:"required" class="form-control" placeholder=form.number_of_cylinder.help_text %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Number of Seats <small class="text-danger">*</small></label>
+                                                        {% render_field form.number_of_seats|attr:"required" class="form-control" placeholder=form.number_of_seats.help_text %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Fuel Type <small class="text-danger">*</small></label>
+                                                        {% render_field form.fuel|attr:"required" class="select" placeholder=form.fuel.help_text %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Price (NGN) <small class="text-danger">*</small></label>
+                                                        {% render_field form.price|attr:"required" class="form-control" placeholder=form.price.help_text %}
+                                                    </div>
+                                                </div>
+
+<!--                                                <h6 class="fw-bold mt-4 mb-1">Location</h6>-->
+<!--                                                <div class="col-lg-6">-->
+<!--                                                    <div class="form-group">-->
+<!--                                                        <label>Address</label>-->
+<!--                                                        <input type="text" class="form-control" placeholder="Enter address">-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="col-lg-6">-->
+<!--                                                    <div class="form-group">-->
+<!--                                                        <label>City</label>-->
+<!--                                                        <input type="text" class="form-control" placeholder="Enter city">-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="col-lg-6">-->
+<!--                                                    <div class="form-group">-->
+<!--                                                        <label>State</label>-->
+<!--                                                        <input type="text" class="form-control" placeholder="Enter state">-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="col-lg-6">-->
+<!--                                                    <div class="form-group">-->
+<!--                                                        <label>Zip Code</label>-->
+<!--                                                        <input type="text" class="form-control" placeholder="Enter zip code">-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+
+                                                <h6 class="fw-bold mt-4 mb-1">Detailed Information</h6>
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label>Description <small class="text-danger">*</small></label>
+                                                        {% render_field form.description|attr:"required" class="form-control" cols="30" rows="5" placeholder=form.description.help_text %}
+                                                    </div>
+                                                </div>
+
+                                                <h6 class="fw-bold my-4">Features</h6>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.coolBox class="form-check-input" placeholder=form.coolBox.help_text %}
+                                                        <label class="form-check-label">
+                                                            Cool Box
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.sunroof class="form-check-input" placeholder=form.sunroof.help_text %}
+                                                        <label class="form-check-label">
+                                                            Sunroof
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.DVDSystem class="form-check-input" placeholder=form.DVDSystem.help_text %}
+                                                        <label class="form-check-label">
+                                                            DVD System
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.remoteKey class="form-check-input" placeholder=form.remoteKey.help_text %}
+                                                        <label class="form-check-label">
+                                                            Remote Key
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.carTracker class="form-check-input" placeholder=form.carTracker.help_text %}
+                                                        <label class="form-check-label">
+                                                            Car Tracker
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.parkAssist class="form-check-input" placeholder=form.parkAssist.help_text %}
+                                                        <label class="form-check-label">
+                                                            Park Assist
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.heatedSeats class="form-check-input" placeholder=form.heatedSeats.help_text %}
+                                                        <label class="form-check-label">
+                                                            Heated Seats
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.parkingSensor class="form-check-input" placeholder=form.parkingSensor.help_text %}
+                                                        <label class="form-check-label">
+                                                            Parking Sensor
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.pushStart class="form-check-input" placeholder=form.pushStart.help_text %}
+                                                        <label class="form-check-label">
+                                                            Push Start
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.reverseCamera class="form-check-input" placeholder=form.reverseCamera.help_text %}
+                                                        <label class="form-check-label">
+                                                            Reverse Camera
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.navigationSystem class="form-check-input" placeholder=form.navigationSystem.help_text %}
+                                                        <label class="form-check-label">
+                                                            Navigation System
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.bluetoothHandsFree class="form-check-input" placeholder=form.bluetoothHandsFree.help_text %}
+                                                        <label class="form-check-label">
+                                                            Bluetooth HandsFree
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.audioSystem class="form-check-input" placeholder=form.audioSystem.help_text %}
+                                                        <label class="form-check-label">
+                                                            Audio System
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 mt-4">
+                                                    <div class="form-check">
+                                                        {% render_field form.can_be_swapped class="form-check-input" placeholder=form.can_be_swapped.help_text %}
+                                                        <label class="form-check-label">
+                                                            This can can be swapped.
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" name="agree" type="checkbox" checked id="agree" required>
+                                                        <label class="form-check-label" for="agree">
+                                                            I Agree With Your Terms Of Services And Privacy Policy.
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 my-4">
+                                                    <button type="button" class="theme-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                        Publish Car
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Save & Publish Deal</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="d-flex justify-content-center mt-3 mb-4">
+                                                                <i class="fa-solid fa-circle-exclamation fa-beat fa-2xl text-warning"></i>
+                                                            </div>
+
+                                                            <div class="d-flex justify-content-center mb-3">
+                                                                <p class="text-center">
+                                                                    Hello, {{request.user.username|title}}. Please note that you cannot update this form after clicking to submit
+                                                                    the upload. You may only delete and upload cars, and your wallet will be charged
+                                                                    for each upload.
+                                                                </p>
+                                                            </div>
+                                                            <div class="d-flex justify-content-evenly mb-3">
+                                                                <button type="submit" id="send" class="theme-btn bg-info">
+                                                                    <span class="far fa-save"></span>
+                                                                    Save
+                                                                    <i class="fa-solid fa-spinner fa-spin fa-lg" id="loader" style="display:none"></i>
+                                                                </button>
+
+                                                                <button type="button" data-bs-dismiss="modal" class="theme-btn bg-danger">
+                                                                    <span class="far fa-xmark"></span>
+                                                                    Cancel
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock content %}
+
+
+{% block js %}
+    <!--Car image upload-->
+    <script type="text/javascript">
+        let files = []
+        submit_btn = document.querySelector("#send");
+        form = document.querySelector(".upload-form");
+        container = document.querySelector(".img-container");
+        text = document.querySelector(".inner");
+        browse = document.querySelector(".car_select");
+        input = document.querySelector(".upload-form input");
+        const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        browse.addEventListener('click', () => input.click());
+        input.addEventListener('change', () => {
+            let file = input.files;
+            for (let i = 0; i < file.length; i++) {
+                //check if file already exists and ignore uploading it again
+                if ( files.every(e => e.name !== file[i].name)) {
+                    files.push(file[i])
+                }
+            }
+            //form.reset();
+            showImages();
+        });
+
+        const showImages = () => {
+            let images = '';
+            files.forEach((e, i) => {
+                images += `
+                    <div class="img">
+                        <img src="${URL.createObjectURL(e)}" alt="">
+                        <span onclick="delImage(${i})">&times;</span>
+                    </div>
+                `;
+            })
+            container.innerHTML = images;
+        }
+
+        const delImage = index => {
+            files.splice(index, 1);
+            showImages();
+        }
+
+        // Drag and Drop functionality...
+        form.addEventListener('dragover', e => {
+            e.preventDefault();
+            form.classList.add('dragover');
+            text.innerHTML = 'Drop images here';
+        });
+
+        form.addEventListener('dragleave', e => {
+            e.preventDefault();
+            form.classList.remove('dragover');
+            text.innerHTML = 'Drag and drop images here or <span class="car_select">Browse</span>';
+        });
+
+        form.addEventListener('drop', e => {
+            e.preventDefault();
+            form.classList.remove('dragover');
+            text.innerHTML = 'Drag and drop images here or <span class="car_select">Browse</span>';
+
+            let file = e.dataTransfer.files;
+            for (let i = 0; i < file.length; i++) {
+                //check if file already exists and ignore uploading it again
+                if ( files.every(e => e.name !== file[i].name)) {
+                    files.push(file[i])
+                }
+            }
+            showImages();
+        });
+
+
+        // Submit to backend...
+        submit_btn.addEventListener('click', () => {
+            document.getElementById('loader').style.display = 'block';
+
+            car_brand = document.querySelector("#car_brand").value;
+            car_model = document.querySelector("#car_model").value;
+
+            let formData = new FormData();
+
+            console.log(files);
+            for(let file of files) {
+                formData.append('file', file)
+            }
+
+            formData.append('car_brand', car_brand);
+            formData.append('car_model', car_model);
+
+            // Send to backend...
+            fetch("{% url 'cars:create' %}",  {
+                method: "POST",
+                headers: {
+                    // "Content-Type": "application/json",
+                    "X-CSRFToken": csrfmiddlewaretoken
+                },
+                body: formData
+            })
+            .then((response) => console.log(response.json()))
+            .then(data => {
+                console.log(data.message);
+                if (data.status === "success") {
+                    document.getElementById('loader').style.display = 'none';
+
+                    window.location.href="{% url 'dealers:dealer_car_list' %}"
+                    // Display success message...
+                    showSuccessNotification(data.message);
+                    // Refresh page...
+                    setTimeout(function(){
+                        window.location.href="{% url 'dealers:dealer_car_list' %}";
+                    }, 5000);
+                }
+            })
+            .catch(error => console.log(error))
+        })
+    </script>
+
+
+    <!--Get car model-->
+    <script>
+        $(document).ready(function() {
+            //__________Get states of each country...
+            $("#car_brand").change(function() {
+                console.log($("#car_brand").val());
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'get_car_brand_models' %}",
+                    data: {
+                        brand: $("#car_brand").val(),
+                        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                    },
+                    success: function (response) {
+                        let models = response.models;
+                        $('#car_model').empty();
+                        $.each(models, function(index, item)
+                        {
+                            console.log(item);
+                            $("#car_model").append(`<option value='${item}'>${item}</option>"`);
+                        });
+                        console.log("Models Fetched");
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock js %}

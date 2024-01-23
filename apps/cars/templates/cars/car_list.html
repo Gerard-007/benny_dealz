@@ -1,0 +1,280 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}All Cars{% endblock title %}
+
+
+{% block content %}
+
+    <main class="main">
+
+        <div class="car-area grid bg py-120">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="car-sidebar">
+                            <div class="car-widget">
+                                <div class="car-search-form">
+                                    <h4 class="car-widget-title">Search</h4>
+                                    <form action="#">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Search">
+                                            <button type="search"><i class="far fa-search"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="car-widget">
+                                <h4 class="car-widget-title">Brands</h4>
+                                <ul>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="brand">
+                                            <label class="form-check-label" for="brand"> All Brands</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="brand1">
+                                            <label class="form-check-label" for="brand1"> BMW</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" checked type="checkbox" id="brand2">
+                                            <label class="form-check-label" for="brand2"> Toyota</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="brand3">
+                                            <label class="form-check-label" for="brand3"> Ferrari</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" checked type="checkbox" id="brand4">
+                                            <label class="form-check-label" for="brand4"> Audi</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="brand5">
+                                            <label class="form-check-label" for="brand5"> Tesla</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="brand6">
+                                            <label class="form-check-label" for="brand6"> Mercedes</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="brand7">
+                                            <label class="form-check-label" for="brand7"> Hyundai</label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="car-widget">
+                                <h4 class="car-widget-title">Price Range</h4>
+                                <div class="price-range-box">
+                                    <div class="price-range-input">
+                                        <input type="text" id="price-amount" readonly>
+                                    </div>
+                                    <div class="price-range"></div>
+                                </div>
+                            </div>
+                            <div class="car-widget">
+                                <h4 class="car-widget-title">Transmission</h4>
+                                <ul>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="tran1">
+                                            <label class="form-check-label" for="tran1"> Automatic</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" checked type="checkbox" id="tran2">
+                                            <label class="form-check-label" for="tran2"> Manual</label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="car-widget">
+                                <h4 class="car-widget-title">Fuel Type</h4>
+                                <ul>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="fuel1">
+                                            <label class="form-check-label" for="fuel1"> Gas</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" checked type="checkbox" id="fuel2">
+                                            <label class="form-check-label" for="fuel2"> Hybrid</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="fuel3">
+                                            <label class="form-check-label" for="fuel3"> Diesel</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="fuel4">
+                                            <label class="form-check-label" for="fuel4"> Eletric</label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="car-widget">
+                                <h4 class="car-widget-title">Features</h4>
+                                <ul>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="feature1">
+                                            <label class="form-check-label" for="feature1"> Airbag - Driver</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" checked type="checkbox" id="feature2">
+                                            <label class="form-check-label" for="feature2"> Airbag - Passenger</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="feature3">
+                                            <label class="form-check-label" for="feature3"> Alloy Wheels</label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="feature4">
+                                            <label class="form-check-label" for="feature4"> Anti-lock Braking System</label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-9">
+                        <div class="col-md-12">
+                            <div class="car-sort">
+                                <h6>Showing 1-6 of {{cars.count}} Results</h6>
+<!--                                <div class="car-sort-list-grid">-->
+<!--                                    <a class="car-sort-grid active" href="listing-grid.html"><i class="far fa-grid-2"></i></a>-->
+<!--                                    <a class="car-sort-list" href="listing-list.html"><i class="far fa-list-ul"></i></a>-->
+<!--                                </div>-->
+                                <div class="col-md-3 car-sort-box">
+                                    <select class="select">
+                                        <option value="5">Sort By Featured</option>
+                                        <option value="2">Sort By Latest</option>
+                                        <option value="3">Sort By Low Price</option>
+                                        <option value="4">Sort By High Price</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {% for c in cars%}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="car-item">
+                                        <div class="car-img">
+                                            <span class="car-status status-1">{{c.status}}</span>
+                                            <img src="{{c.get_main_image}}" style="height:150px; width:100%">
+                                            <div class="car-btns">
+                                                <a type="button" id="favorite-button" data-car-id="{{c.id}}">
+                                                    {% if request.user in c.favorited_by.all %}
+                                                        <i class="fas fa-xmark" id="remove_favorite_icon"></i>
+                                                    {% else %}
+                                                        <i class="far fa-heart" id="add_favorite_icon"></i>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="car-content">
+                                            <div class="car-top">
+                                                <h4><a href="{% url 'cars:detail' c.slug %}">{{c.get_car_name}}</a></h4>
+                                            </div>
+                                            <ul class="car-list">
+                                                <li><i class="far fa-steering-wheel"></i>{{c.transmission}}</li>
+                                                <li><i class="far fa-road"></i>{{c.power}}</li>
+                                                <li><i class="far fa-car"></i>Model: {{c.model_year}}</li>
+                                                <li><i class="far fa-gas-pump"></i>{{c.fuel}}</li>
+                                            </ul>
+                                            <div class="car-footer">
+                                                <span class="car-price">₦{{c.price|intcomma}}</span>
+                                                <a href="{% url 'cars:detail' c.slug %}" class="theme-btn"><span class="far fa-eye"></span>Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="download-area mb-120">
+                                    <div class="container">
+                                        <div class="download-wrapper">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="download-content">
+                                                        <div class="site-heading mb-4">
+                                                            <span class="site-title-tagline justify-content-start">
+                                                            <i class="flaticon-drive"></i> welcome to Benny Dealz
+                                                            </span>
+                                                            <h6 class="site-title mb-10">do visit often for updates</h6>
+                                                            <p>
+                                                                Dear guests & users we currently have no car deals
+                                                                as of now, please do visit often for updates
+                                                            </p>
+                                                        </div>
+                                                        <div class="download-btn">
+                                                            {% if  request.user.is_a_dealer %}
+                                                                <a href="{% url 'cars:create' %}">
+                                                                    <i class="fa-solid fa-car"></i>
+                                                                    <div class="download-btn-content">
+                                                                        <span>Click to</span>
+                                                                        <strong>Add</strong>
+                                                                    </div>
+                                                                </a>
+                                                            {% else %}
+                                                                <a href="{% url 'contact' %}">
+                                                                    <i class="fa-solid fa-envelope"></i>
+                                                                    <div class="download-btn-content">
+                                                                        <span>Click to</span>
+                                                                        <strong>Message Us</strong>
+                                                                    </div>
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="download-img">
+                                                <img src="https://res.cloudinary.com/bennydeals/image/upload/v1629976365/bgs/BennyDealz_full_axdsgl.png" alt>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if cars.count > 6 %}
+                            {% include 'includes/pagination.html' %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+{% endblock %}
