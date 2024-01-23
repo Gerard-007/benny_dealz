@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
-from decouple import config
 from django.contrib import messages
 from benny_dealz.third_parties.cloudinary import *
 
@@ -28,8 +27,8 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get("DEBUG", 1)))
 
-ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGIN = [f"https://{config('HOST_NAME')}"]
+ALLOWED_HOSTS = ["*"] if DEBUG else [".vercel.app"]
+# CSRF_TRUSTED_ORIGIN = [f"https://{config('HOST_NAME')}"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -101,45 +100,30 @@ DATABASES = {
     }
 }
 
-asure_connection_string = config("AZURE_POSTGRESQL_CONNECTIONSTRING")
-parameters = {pair.split("="): pair.split("=")[1] for pair in asure_connection_string.split(' ')} if asure_connection_string else None
+
+DB_USERNAME = config("POSTGRES_USER")
+DB_PASSWORD = config("POSTGRES_PASSWORD")
+DB_DATABASE = config("POSTGRES_DB")
+DB_HOST = config("POSTGRES_HOST")
+DB_PORT = config("POSTGRES_PORT")
+DB_IS_AVAIL = all([
+    DB_USERNAME,
+])
 
 POSTGRES_READY = str(config('POSTGRES_READY')) == "1"
-if POSTGRES_READY:
+
+if DB_IS_AVAIL and POSTGRES_READY:
     DATABASES = {
         "default": {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': parameters["dbname"],
-            'HOST': parameters["host"],
-            'USER': parameters["user"],
-            'PASSWORD': parameters["password"]
+            'NAME': DB_DATABASE,
+            'USER': DB_USERNAME,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT
         }
     }
 print(DATABASES)
-
-# DB_USERNAME = config("POSTGRES_USER")
-# DB_PASSWORD = config("POSTGRES_PASSWORD")
-# DB_DATABASE = config("POSTGRES_DB")
-# DB_HOST = config("POSTGRES_HOST")
-# DB_PORT = config("POSTGRES_PORT")
-# DB_IS_AVAIL = all([
-#     DB_USERNAME,
-# ])
-#
-# POSTGRES_READY = str(config('POSTGRES_READY')) == "1"
-#
-# if DB_IS_AVAIL and POSTGRES_READY:
-#     DATABASES = {
-#         "default": {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': DB_DATABASE,
-#             'USER': DB_USERNAME,
-#             'PASSWORD': DB_PASSWORD,
-#             'HOST': DB_HOST,
-#             'PORT': DB_PORT
-#         }
-#     }
-# print(DATABASES)
 
 PROTOCOL = 'https'
 
