@@ -15,4 +15,5 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'benny_dealz.settings')
 
 application = get_wsgi_application()
 
-app = application
+# For vercel Deployment
+# app = application
