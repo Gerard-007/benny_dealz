@@ -1,6 +1,6 @@
 import django_filters
 from .models import Car
-from apps.cars.car_utils import MANUFACTURERS, STATUS, YEAR_CHOICES, CATEGORY, BODY_TYPE, TRANSMISSION, FUEL_TYPE, manufacturers_datas
+from apps.cars.car_utils import MANUFACTURERS, STATUS, YEAR_CHOICES, CATEGORY, BODY_TYPE, TRANSMISSION, FUEL_TYPE
 
 
 class CarFilter(django_filters.FilterSet):

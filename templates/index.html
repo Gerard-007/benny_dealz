@@ -100,96 +100,89 @@
       <div class="container">
         <div class="find-car-form">
           <h4 class="find-car-title">Let's Find Your Perfect Car</h4>
-          <form action="#">
+          <form method="post" action="{% url 'filtered_results' %}" id="filterForm">
+            {% csrf_token %}
             <div class="row">
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Car Condition</label>
-                  <select class="select">
-                    <option value="1">All Status</option>
-                    <option value="2">New Car</option>
-                    <option value="3">Used Car</option>
+                  <select class="nice-select" id="condition" name="condition">
+                    <option value="">All Status</option>
+                    <option value="New">New Car</option>
+                    <option value="Foreign Used">Foreign Used Car</option>
+                    <option value="Nigerian Used">Nigerian Used Car</option>
                   </select>
                 </div>
               </div>
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Brand Name</label>
-                  <select class="select">
-                    <option value="1">All Brand</option>
-                    <option value="2">BMW</option>
-                    <option value="3">Ferrari</option>
-                    <option value="4">Marcediz Benz</option>
-                    <option value="5">Hyundai</option>
-                    <option value="6">Nissan</option>
+                  <select class="nice-select" id="car_brand" name="car_brand">
+                    <option value>Choose</option>
+                    {% for model in models %}
+                      <option value="{{model}}">{{model}}</option>
+                    {% endfor %}
                   </select>
                 </div>
               </div>
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Car Model</label>
-                  <select class="select">
-                    <option value="1">All Model</option>
-                    <option value="2">3-Series </option>
-                    <option value="3">Carrera</option>
-                    <option value="4">G-TR</option>
-                    <option value="3">Macan</option>
-                    <option value="3">N-Series</option>
+                  <select class="nice-select" id="car_model" name="car_model">
+                    <option value>Choose</option>
                   </select>
                 </div>
               </div>
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Choose Year</label>
-                  <select class="select">
-                    <option value="1">All Year</option>
-                    <option value="2">2023</option>
-                    <option value="3">2022</option>
-                    <option value="4">2021</option>
-                    <option value="5">2020</option>
+                  <select class="nice-select" id="year" name="year">
+                    <option value="">All Year</option>
+                    {% for y in years %}
+                      <option value="{{y}}">{{y}}</option>
+                    {% endfor %}
                   </select>
                 </div>
               </div>
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Choose Milieage</label>
-                  <select class="select">
-                    <option value="1">All Milieage</option>
-                    <option value="2">2000 Miles</option>
-                    <option value="3">3000 Miles</option>
-                    <option value="4">4000 Miles</option>
-                    <option value="5">5000 Miles</option>
+                  <select class="nice-select" id="mileage" name="mileage">
+                    <option value="">All Mileage</option>
+                    <option value="1000,100000">1000 - 100,000 Miles</option>
+                    <option value="101000, 200000">101,000 - 200,000 Miles</option>
+                    <option value="200000">More than 200,000 Miles</option>
                   </select>
                 </div>
               </div>
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Price Range</label>
-                  <select class="select">
-                    <option value="1">All Price</option>
-                    <option value="2">$1,000 - $5,000</option>
-                    <option value="3">$5,000 - $10,000</option>
-                    <option value="4">$15,000 - $20,000</option>
-                    <option value="5">$20,000 - $25,000</option>
-                    <option value="6">$25,000 - $30,000</option>
+                  <select class="nice-select" id="price" name="price">
+                    <option value="">All Price</option>
+                    <option value="1000000, 2000000">₦1m - ₦2m</option>
+                    <option value="2000000, 4000000">₦2m - ₦4m</option>
+                    <option value="4000000, 6000000">₦4m - ₦6m</option>
+                    <option value="6000000">More than ₦6m</option>
                   </select>
                 </div>
               </div>
               <div class="col-lg-3">
                 <div class="form-group">
                   <label>Body Type</label>
-                  <select class="select">
-                    <option value="1">All Body Type</option>
-                    <option value="2">Sedan</option>
-                    <option value="5">Compact</option>
-                    <option value="3">Coupe</option>
-                    <option value="4">Wagon</option>
+                  <select class="nice-select" id="body_type" name="body_type">
+                    <option value="">All Body Type</option>
+                    {% for b in body_types %}
+                      <option value="{{b}}">{{b}}</option>
+                    {% endfor %}
                   </select>
                 </div>
               </div>
               <div class="col-lg-3 align-self-end">
-                <button class="theme-btn" type="submit"><span class="far fa-search"></span> Find Your
-                  Car</button>
+                <button class="theme-btn" type="submit">
+                  <span class="far fa-search"></span>
+                  Find Your Car
+                </button>
               </div>
             </div>
           </form>
@@ -774,3 +767,36 @@
 
   </main>
 {% endblock %}
+
+
+{% block js %}
+
+    <!--Get car model-->
+    <script>
+        $(document).ready(function() {
+            //__________Get states of each country...
+            $("#car_brand").change(function() {
+                console.log($("#car_brand").val());
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'get_car_brand_models' %}",
+                    data: {
+                        brand: $("#car_brand").val(),
+                        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                    },
+                    success: function (response) {
+                        let models = response.models;
+                        $('#car_model').empty();
+                        $.each(models, function(index, item)
+                        {
+                            console.log(item);
+                            $("#car_model").append(`<option value='${item}'>${item}</option>"`);
+                        });
+                        console.log("Models Fetched");
+                    }
+                });
+            });
+        });
+    </script>
+
+{% endblock js %}

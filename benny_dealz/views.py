@@ -1,3 +1,4 @@
+import datetime
 import re
 
 from django.core.mail import EmailMultiAlternatives
@@ -9,6 +10,7 @@ from django.views import View
 from validate_email import validate_email
 
 from apps.accounts.models import User
+from apps.cars.car_utils import body_types
 from apps.dealers.models import Dealer
 from apps.profiles.models import Profile
 from benny_dealz import settings
@@ -21,14 +23,87 @@ class HomeView(View):
 
     def get(self, request):
         latest_cars = Car.objects.all().order_by("-date")[:6]
-        dealers_in_same_state = Dealer.objects.filter(user__profile__state=request.user.profile.state) if request.user.is_authenticated else None
-        top_manufacturers = Car.objects.values('manufacturer').annotate(total_cars=Count('id')).order_by('-total_cars')[:6]
+        dealers_in_same_state = Dealer.objects.filter(
+            user__profile__state=request.user.profile.state) if request.user.is_authenticated else None
+        top_manufacturers = Car.objects.values('manufacturer').annotate(total_cars=Count('id')).order_by('-total_cars')[
+                            :6]
+        # Get models
+        brand_file_path = "benny_dealz/json_files/car-list.json"
+        brands = get_car_brands(brand_file_path)
         context = {
+            "models": brands,
+            "body_types": body_types,
+            "years": list(range(1995, datetime.date.today().year)),
             "cars": latest_cars,
             "dealers": dealers_in_same_state,
-            "top_manufacturers": top_manufacturers
+            "top_manufacturers": top_manufacturers,
         }
         return render(request, self.template_name, context)
+
+
+class FilterCarView(View):
+
+    def post(self, request):
+        condition = request.POST.get('condition')
+        brand = request.POST.get('brand')
+        model = request.POST.get('model')
+        year = request.POST.get('year')
+        mileage = request.POST.get('mileage')
+        price = request.POST.get('price')
+        body_type = request.POST.get('body_type')
+
+        print(f"""
+            condition: {condition}
+            brand: {brand}
+            model: {model}
+            year: {year}
+            mileage: {mileage}
+            price: {price}
+            body_type: {body_type}
+        """)
+
+        price_min = 0.00
+        price_max = 0.00
+
+        milage_min = 0.00
+        milage_max = 0.00
+
+        if price:
+            prices = price.split(',')
+            price_min = int(prices[0])
+            price_max = int(prices[1])
+
+        if mileage:
+            milages = mileage.split(',')
+            milage_min = int(milages[0])
+            milage_max = int(milages[1])
+
+        # Construct the filter parameters
+        filters = {}
+        if condition:
+            filters['condition'] = condition
+        if brand:
+            filters['manufacturer'] = brand
+        if model:
+            filters['make'] = model
+        if year:
+            filters['model_year'] = year
+        if milage_min and milage_max:
+            filters['mileage__range'] = (milage_min, milage_max)
+        if price_min and price_max:
+            filters['price__range'] = (price_min, price_max)
+        if body_type:
+            filters['body_type'] = body_type
+
+        # Apply filters to the Car model
+        filtered_cars = Car.objects.filter(**filters)
+
+        # Convert queryset to a list of dictionaries
+        cars_list = list(filtered_cars.values())
+
+        # Redirect to the search.html page with filtered results
+        return render(request, 'pages/search.html', {'cars': cars_list})
+        # return JsonResponse({'cars': cars_list})
 
 
 class AboutUs(View):
@@ -157,44 +232,6 @@ class GetCarModels(View):
         return JsonResponse(data=data, safe=False)
 
 
-class FilterCarView(View):
-
-    def post(self, request):
-        condition = request.POST.get('condition')
-        brand = request.POST.get('brand')
-        model = request.POST.get('model')
-        year = request.POST.get('year')
-        mileage = request.POST.get('mileage')
-        price_min = request.POST.get('price_min')
-        price_max = request.POST.get('price_max')
-        body_type = request.POST.get('body_type')
-
-        # Construct the filter parameters
-        filters = {}
-        if condition:
-            filters['condition'] = condition
-        if brand:
-            filters['brand'] = brand
-        if model:
-            filters['model'] = model
-        if year:
-            filters['year'] = year
-        if mileage:
-            filters['mileage'] = mileage
-        if price_min and price_max:
-            filters['price__range'] = (price_min, price_max)
-        if body_type:
-            filters['body_type'] = body_type
-
-        # Apply filters to the Car model
-        filtered_cars = Car.objects.filter(**filters)
-
-        # Convert queryset to a list of dictionaries
-        cars_list = list(filtered_cars.values())
-
-        return JsonResponse({'cars': cars_list})
-
-
 def check_username(request):
     username = request.POST.get('username')
     if not str(username).isalnum():
@@ -220,7 +257,8 @@ def check_password(request):
         return HttpResponse("<small class='text-danger'>Password is short, must be at least 6 characters</small>")
     # Check if the password contains at least one uppercase letter, one lowercase letter, and one digit
     if not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password) or not re.search(r'\d', password):
-        return HttpResponse("<small class='text-warning'>Password must contain at least one uppercase letter, one lowercase letter, and one digit</small>")
+        return HttpResponse(
+            "<small class='text-warning'>Password must contain at least one uppercase letter, one lowercase letter, and one digit</small>")
     # Password is valid
     return HttpResponse("<small class='text-success'>Password is valid</small>")
 
@@ -239,7 +277,8 @@ def check_phone(request):
     phone_number = request.POST.get('phone')
     print(f"Checking Phone {phone_number}")
     if "+" not in phone_number:
-        return HttpResponse("<small class='text-danger'>Please affix country code on your phone number eg(+2348031234567)</small>")
+        return HttpResponse(
+            "<small class='text-danger'>Please affix country code on your phone number eg(+2348031234567)</small>")
     elif len(phone_number) > 14 or len(phone_number) < 14:
         return HttpResponse("<small class='text-danger'>Invalid phone number</small>")
     elif Profile.objects.filter(phone_number=phone_number).exists():
@@ -251,10 +290,12 @@ def check_business_phone(request):
     phone_number = request.POST.get('business_phone')
     print(f"Checking Phone {phone_number}")
     if "+" not in phone_number:
-        return HttpResponse("<small class='text-danger'>Please affix country code on your phone number eg(+2348031234567)</small>")
+        return HttpResponse(
+            "<small class='text-danger'>Please affix country code on your phone number eg(+2348031234567)</small>")
     if len(phone_number) > 14 or len(phone_number) < 14:
         return HttpResponse("<small class='text-info'>Invalid phone number</small>")
-    if Dealer.objects.filter(business_phone=phone_number).exists() or Profile.objects.filter(phone_number=phone_number).exists():
+    if Dealer.objects.filter(business_phone=phone_number).exists() or Profile.objects.filter(
+            phone_number=phone_number).exists():
         return HttpResponse("<small class='text-danger'>Sorry phone number already in use.</small>")
     return HttpResponse("<small class='text-success'>Phone number is available.</small>")
 
@@ -273,7 +314,6 @@ def check_business_email(request):
     if Dealer.objects.filter(business_email=business_email).exists():
         return HttpResponse("<small class='text-danger'>Sorry email already in use.</small>")
     return HttpResponse("<small class='text-success'>Email is available.</small>")
-
 
 # def log_messages(request):
 #     if request.is_ajax() and request.method == "POST":

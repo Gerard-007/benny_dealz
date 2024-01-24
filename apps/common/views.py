@@ -35,3 +35,4 @@ class EmailThreading(threading.Thread):
 
     def run(self):
         self.email_message.send(fail_silently=True)
+

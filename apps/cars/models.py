@@ -8,8 +8,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.urls import reverse
 from benny_dealz.utils import unique_slug_generator
-from apps.cars.car_utils import MANUFACTURERS, STATUS, YEAR_CHOICES, CATEGORY, BODY_TYPE, TRANSMISSION, FUEL_TYPE, \
-    manufacturers_datas, SWAP_STATUS
+from apps.cars.car_utils import MANUFACTURERS, STATUS, YEAR_CHOICES, CATEGORY, BODY_TYPE, TRANSMISSION, FUEL_TYPE, SWAP_STATUS
 from apps.notifications.models import Notification
 from django.db.models.signals import pre_save, pre_delete, post_save
 from apps.accounts.models import User
@@ -23,8 +22,8 @@ class Favorite(models.Model):
 class Car(models.Model):
     dealer = models.ForeignKey('dealers.Dealer', on_delete=models.CASCADE, related_name='cars')
     manufacturer = models.CharField(max_length=100)
-    manufacturer_logo = models.URLField(blank=True, null=True)
     make = models.CharField(max_length=100)
+    manufacturer_logo = models.URLField(blank=True, null=True)
     slug = models.SlugField(unique=True)
     status = models.CharField(max_length=100, choices=STATUS, default="Available")
     car_inspection = models.BooleanField(default=False)

@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from benny_dealz.views import HomeView, AboutUs, ContactUs, GetStates, GetCities, GetCarBrands, GetCarModels, \
     check_phone, check_username, check_email, check_password, confirm_password, check_business_phone, \
-    check_business_name, check_business_email
+    check_business_name, check_business_email, FilterCarView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,7 +43,7 @@ urlpatterns = [
     path('get_car_brands/', csrf_exempt(GetCarBrands.as_view()), name="get_car_brands"),
     path('get_car_brand_models/', csrf_exempt(GetCarModels.as_view()), name="get_car_brand_models"),
 
-    # path('filtered_results/', FilterResultView.as_view(), name='filtered_results'),
+    path('filtered_results/', csrf_exempt(FilterCarView.as_view()), name='filtered_results'),
     # path('chats/', include(('chats.urls', 'chats'), namespace='chats')),
     # path('conversations/', include(('conversations.urls', 'conversations'), namespace='conversations')),
 ]

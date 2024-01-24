@@ -1,36 +1,5 @@
-// Filter all cars...
-$(document).ready(function () {
-    // Function to handle filtering
-    function filterCars() {
-        var filters = {
-            condition: $('#condition').val(),
-            brand: $('#car_brand').val(),
-            model: $('#car_model').val(),
-            year: $('#year').val(),
-            mileage: $('#mileage').val(),
-            price: $('#price').val(),
-            body_type: $('#body_type').val(),
-            csrfmiddlewaretoken: "{{csrf_token}}"
-        };
-        $.ajax({
-            url: "/filtered_results/",  // Replace with your actual URL
-            type: 'POST',
-            data: filters,
-            success: function (response) {
-                console.log(response.cars);
-                showSuccessNotification("Filtered complete.");
-            },
-            error: function (error) {
-                console.log('Error filtering cars:', error);
-            }
-        });
-    }
 
-    // Attach an event listener to the filter button
-    $('#filter_button').click(function () {
-        filterCars();
-    });
-});
+
 
 // Add favorite car...
 // Assuming you have a button with the class "favorite-button" and data-car-id attribute

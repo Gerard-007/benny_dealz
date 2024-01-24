@@ -4,25 +4,24 @@ $(document).ready(function () {
     function filterCars() {
         var filters = {
             condition: $('#condition').val(),
-            brand: $('#brand').val(),
-            model: $('#model').val(),
+            brand: $('#car_brand').val(),
+            model: $('#car_model').val(),
             year: $('#year').val(),
             mileage: $('#mileage').val(),
-            price_min: $('#price_min').val(),
-            price_max: $('#price_max').val(),
+            price: $('#price').val(),
             body_type: $('#body_type').val(),
+            csrfmiddlewaretoken: "{{csrf_token}}"
         };
-
         $.ajax({
-            url: '#',  // Replace with your actual URL
+            url: "/filtered_results/",  // Replace with your actual URL
             type: 'POST',
             data: filters,
             success: function (response) {
                 console.log(response.cars);
-                // Handle the filtered cars in the frontend
+                showSuccessNotification("Filtered complete.");
             },
             error: function (error) {
-                console.error('Error filtering cars:', error);
+                console.log('Error filtering cars:', error);
             }
         });
     }
@@ -32,7 +31,6 @@ $(document).ready(function () {
         filterCars();
     });
 });
-
 
 // Add favorite car...
 // Assuming you have a button with the class "favorite-button" and data-car-id attribute
