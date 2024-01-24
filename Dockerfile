@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.11.4-slim-bullseye
 WORKDIR /app
 
 ENV PYTHONUNBUFFERED 1
@@ -14,4 +14,4 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
-ENTRYPOINT ["gunicorn", "benny_dealz.wsgi"]
+ENTRYPOINT [ "gunicorn", "benny_dealz.wsgi", "-b", "0.0.0.0:8000"]
