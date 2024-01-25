@@ -378,7 +378,7 @@
         </div>
         <div class="row">
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".25s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".25s" data-body-type="Sedan">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/01.png' %}" alt>
               </div>
@@ -386,7 +386,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".50s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".50s" data-body-type="Compact">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/02.png' %}" alt>
               </div>
@@ -394,7 +394,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".75s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".75s" data-body-type="Convertible">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/03.png' %}" alt>
               </div>
@@ -402,7 +402,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1s" data-body-type="Suv">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/04.png' %}" alt>
               </div>
@@ -410,7 +410,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1.25s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1.25s" data-body-type="Crossover">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/05.png' %}" alt>
               </div>
@@ -418,7 +418,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1.50s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1.50s" data-body-type="Wagon">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/06.png' %}" alt>
               </div>
@@ -426,7 +426,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".25s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".25s" data-body-type="Sports">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/07.png' %}" alt>
               </div>
@@ -434,7 +434,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".50s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".50s" data-body-type="Pickup">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/08.png' %}" alt>
               </div>
@@ -442,7 +442,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".75s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay=".75s" data-body-type="Mpv">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/09.png' %}" alt>
               </div>
@@ -450,7 +450,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1s" data-body-type="Coupe">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/10.png' %}" alt>
               </div>
@@ -458,7 +458,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1.25s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1.25s" data-body-type="Electric">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/11.png' %}" alt>
               </div>
@@ -466,7 +466,7 @@
             </a>
           </div>
           <div class="col-6 col-md-4 col-lg-2">
-            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1.50s">
+            <a href="#" class="category-item wow fadeInUp" data-wow-delay="1.50s" data-body-type="Luxury">
               <div class="category-img">
                 <img src="{% static 'assets/img/category/12.png' %}" alt>
               </div>
@@ -630,15 +630,15 @@
             </div>
           </div>
           <div class="row">
-            {% for c in top_manufacturers %}
-              <div class="col-6 col-md-3 col-lg-2">
-                <a href="#" class="brand-item wow fadeInUp" data-wow-delay=".25s">
-                  <div class="brand-img">
-                    <img src="{{c.manufacturer_logo}}" alt="logo">
-                  </div>
-                  <h5>{{c.manufacturer}}</h5>
-                </a>
-              </div>
+            {% for manufacturer in top_manufacturers %}
+            <div class="col-6 col-md-3 col-lg-2">
+              <a href="#" class="brand-item wow fadeInUp" data-wow-delay=".25s">
+                <div class="brand-img">
+                  <img src="{{ manufacturer.manufacturer_logo }}" alt="logo">
+                </div>
+                <h5>{{ manufacturer.manufacturer }}</h5>
+              </a>
+            </div>
             {% endfor %}
           </div>
         </div>

@@ -25,8 +25,7 @@ class HomeView(View):
         latest_cars = Car.objects.all().order_by("-date")[:6]
         dealers_in_same_state = Dealer.objects.filter(
             user__profile__state=request.user.profile.state) if request.user.is_authenticated else None
-        top_manufacturers = Car.objects.values('manufacturer').annotate(total_cars=Count('id')).order_by('-total_cars')[
-                            :6]
+        top_manufacturers = Car.objects.values('manufacturer', 'manufacturer_logo').annotate(total_cars=Count('id')).order_by('-total_cars')[:6]
         # Get models
         brand_file_path = "benny_dealz/json_files/car-list.json"
         brands = get_car_brands(brand_file_path)
@@ -52,15 +51,15 @@ class FilterCarView(View):
         price = request.POST.get('price')
         body_type = request.POST.get('body_type')
 
-        # print(f"""
-        #     condition: {condition}
-        #     brand: {brand}
-        #     model: {model}
-        #     year: {year}
-        #     mileage: {mileage}
-        #     price: {price}
-        #     body_type: {body_type}
-        # """)
+        print(f"""
+            condition: {condition}
+            brand: {brand}
+            model: {model}
+            year: {year}
+            mileage: {mileage}
+            price: {price}
+            body_type: {body_type}
+        """)
 
         price_min = 0.00
         price_max = 0.00
@@ -190,7 +189,6 @@ class GetCities(View):
 
 
 class GetCarBrands(View):
-
     def post(self, request):
         file_path = "benny_dealz/json_files/car-list.json"
         brands = get_car_brands(file_path)
@@ -206,7 +204,7 @@ class GetCarModels(View):
     def post(self, request):
         file_path = "benny_dealz/json_files/car-list.json"
         brand = request.POST['brand']
-        print(f"brand: {brand}")
+        # print(f"brand: {brand}")
         models = get_car_brand_models(file_path, brand)
         data = {
             "models": models,

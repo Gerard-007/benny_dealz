@@ -92,3 +92,30 @@ $('#remove-favorite-button').click(function () {
         }
     });
 });
+
+
+
+$(document).ready(function () {
+    // Add a click event listener to all category-item links
+    $('.category-item').on('click', function (event) {
+        event.preventDefault(); // Prevent the default link behavior
+
+        // Get the selected body type from the data attribute
+        var bodyType = $(this).data('body-type');
+
+        // Send an AJAX request to your backend with the selected body type
+        $.ajax({
+            type: 'POST',
+            url: '/filtered_results/', // Replace with the actual URL of your FilterCarView
+            data: { body_type: bodyType },
+            success: function (response) {
+                console.log("Data sent")
+                // Handle the response from the backend (e.g., redirect to search.html)
+                window.location.href = '/filtered_results/';
+            },
+            error: function (error) {
+                console.log('Error:', error);
+            }
+        });
+    });
+});

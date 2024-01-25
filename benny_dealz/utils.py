@@ -77,7 +77,7 @@ def generate_password(org_name, volantBA_user):
 def get_car_brands(json_file_dir):
     with open(json_file_dir, encoding='utf-8') as f:
         data = json.load(f)
-    print([car['brand'] for car in data])
+    # print([car['brand'] for car in data])
     return [car['brand'] for car in data]
 
 

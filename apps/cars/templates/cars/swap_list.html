@@ -36,6 +36,7 @@
                       <table class="table text-nowrap" id="data_table">
                         <thead>
                           <tr>
+                            <th>By</th>
                             <th>Img</th>
                             <th>Car Info</th>
                             <th>Price</th>
@@ -49,6 +50,9 @@
                         <tbody>
                           {% for c in carswaps %}
                             <tr>
+                              <td>
+                                {{c.owner.profile.get_full_name}}
+                              </td>
                               <td>
                                 <div class="table-list-info">
                                   <img src="{{c.get_car_swap_main_image}}" alt>

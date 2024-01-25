@@ -101,7 +101,12 @@ BODY_TYPE = (
     ('Crossover', 'Crossover'),
     ('Mpv', 'Mpv'),
     ('Sedan', 'Sedan'),
-    ('Truck', 'Truck')
+    ('Truck', 'Truck'),
+    ('Electric', 'Electric'),
+    ('Luxury', 'Luxury'),
+    ('Wagon', 'Wagon'),
+    ('Compact', 'Compact'),
+    ('Sports', 'Sports'),
 )
 
 STATUS = (
@@ -117,14 +122,19 @@ SWAP_STATUS = (
 )
 
 body_types = [
-            'Bus',
-            'Coupe',
-            'Hatchback',
-            'Pickup',
-            'Suv',
-            'Convertible',
-            'Crossover',
-            'Mpv',
-            'Sedan',
-            'Truck'
-        ]
+    'Bus',
+    'Coupe',
+    'Hatchback',
+    'Pickup',
+    'Suv',
+    'Convertible',
+    'Crossover',
+    'Mpv',
+    'Sedan',
+    'Truck',
+    'Electric',
+    'Luxury',
+    'Wagon',
+    'Compact',
+    'Sports',
+]
