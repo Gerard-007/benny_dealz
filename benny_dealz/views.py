@@ -52,15 +52,15 @@ class FilterCarView(View):
         price = request.POST.get('price')
         body_type = request.POST.get('body_type')
 
-        print(f"""
-            condition: {condition}
-            brand: {brand}
-            model: {model}
-            year: {year}
-            mileage: {mileage}
-            price: {price}
-            body_type: {body_type}
-        """)
+        # print(f"""
+        #     condition: {condition}
+        #     brand: {brand}
+        #     model: {model}
+        #     year: {year}
+        #     mileage: {mileage}
+        #     price: {price}
+        #     body_type: {body_type}
+        # """)
 
         price_min = 0.00
         price_max = 0.00
@@ -164,10 +164,6 @@ class GetStates(View):
         file_path = "benny_dealz/json_files/countries_states_cities.json"
         country = request.POST['country']
         states = get_states(file_path, country)
-        print(f'''
-            country: {country}
-            states: {states}
-        ''')
         data = {
             "states": states,
             "message": "request was successful states populated..."
@@ -186,12 +182,6 @@ class GetCities(View):
         else:
             file_path = "benny_dealz/json_files/countries_states_cities.json"
             cities = get_cities_only(file_path, country, state)
-        print(f'''
-            country: {country}
-            state: {state}
-            cities: {cities}
-            file_path: {file_path}
-        ''')
         data = {
             "cities": cities,
             "success": "request was successful cities populated..."
@@ -204,9 +194,6 @@ class GetCarBrands(View):
     def post(self, request):
         file_path = "benny_dealz/json_files/car-list.json"
         brands = get_car_brands(file_path)
-        print(f'''
-            brands: {brands}
-        ''')
         data = {
             "brands": brands,
             "message": "request was successful brands populated..."
@@ -221,10 +208,6 @@ class GetCarModels(View):
         brand = request.POST['brand']
         print(f"brand: {brand}")
         models = get_car_brand_models(file_path, brand)
-        print(f'''
-            brand: {brand}
-            models: {models}
-        ''')
         data = {
             "models": models,
             "message": "request was successful brands populated..."
