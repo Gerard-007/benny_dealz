@@ -6,8 +6,8 @@ class CarForm(ModelForm):
     class Meta:
         model = Car
         fields = [
-            # 'manufacturer',
-            # 'make',
+            # 'brand',
+            # 'model',
             # 'status',
             'model_year',
             'condition',
@@ -23,6 +23,7 @@ class CarForm(ModelForm):
             'price',
             'description',
             'can_be_swapped',
+            'address',
 
             'coolBox',
             'sunroof',
@@ -44,8 +45,8 @@ class CarSwapForm(ModelForm):
     class Meta:
         model = CarSwap
         fields = [
-            'manufacturer',
-            'make',
+            'brand',
+            'model',
             'model_year',
             'body_type',
             'price',

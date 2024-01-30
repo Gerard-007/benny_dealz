@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.views.generic import DetailView, UpdateView
-from apps.dealers.models import Dealer
+from apps.dealers.models import Dealer, DealerAddress
 from apps.profiles.models import Profile
 from benny_dealz.utils import get_states_only
 
@@ -74,6 +74,17 @@ class ProfileUpdateView(LoginRequiredMixin, View):
             profile.local_area = local_area
             profile.address = address
             profile.save()
+        if request.user.is_a_dealer:
+            dealer = Dealer.objects.filter(user=request.user).first()
+            dealer_address, created = DealerAddress.objects.get_or_create(
+                dealer=dealer,
+                address_line_1=address
+            )
+            dealer_address.dealer = dealer
+            dealer_address.address_line_1 = address
+            dealer_address.city = city
+            dealer_address.state = state
+            dealer_address.save()
         return JsonResponse({
             "status": "success",
             "message": "Profile updated successfully...",

@@ -31,30 +31,30 @@
                   </div>
                 </div>
                 <div class="col-lg-12">
-                  {% if addresses or request.user.profile.address %}
+                  {% if addresses %}
                     <div class="row">
 
-                      <div class="col-md-7">
-                        <div class="contact-info">
-                          <div class="contact-info-icon">
-                            <i class="fal fa-map-location-dot"></i>
-                          </div>
-                          <div class="contact-info-content">
-                            <h6>{{request.user.profile.get_user_address}}</h6>
-                            <p>
-                              {{request.user.profile.local_area}},<br>
-                              {{request.user.profile.address}},<br>
-                              {{request.user.profile.city}},{{request.user.profile.state}}<br>
-                              {{request.user.profile.country}}<br>
-                            </p>
-                            <div class="d-flex justify-content-evenly">
-                              <a href="{% url 'profiles:profile_detail' request.user.profile.slug %}" data-sid="{{a.id}}" class="btn btn-light">
-                                <i class="fa-solid fa-pen-to-square fa-xl"></i>
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+<!--                      <div class="col-md-7">-->
+<!--                        <div class="contact-info">-->
+<!--                          <div class="contact-info-icon">-->
+<!--                            <i class="fal fa-map-location-dot"></i>-->
+<!--                          </div>-->
+<!--                          <div class="contact-info-content">-->
+<!--                            <h6>{{request.user.profile.get_user_address}}</h6>-->
+<!--                            <p>-->
+<!--                              {{request.user.profile.local_area}},<br>-->
+<!--                              {{request.user.profile.address}},<br>-->
+<!--                              {{request.user.profile.city}},{{request.user.profile.state}}<br>-->
+<!--                              {{request.user.profile.country}}<br>-->
+<!--                            </p>-->
+<!--                            <div class="d-flex justify-content-evenly">-->
+<!--                              <a href="{% url 'profiles:profile_detail' request.user.profile.slug %}" data-sid="{{a.id}}" class="btn btn-light">-->
+<!--                                <i class="fa-solid fa-pen-to-square fa-xl"></i>-->
+<!--                              </a>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                      </div>-->
                     {% for a in addresses %}
                       <div class="col-md-7">
                         <div class="contact-info">
@@ -65,7 +65,9 @@
                             <h6>{{a.get_dealer_address}}</h6>
                             <p>
                               {{a.address_line_1}},<br>
-                              {{a.address_line_2}},<br>
+                                {% if a.address_line_2 %}
+                                  {{a.address_line_2}},<br>
+                                {% endif %}
                               {{a.city}},{{a.state}}<br>
                               {{a.country}}<br>
                             </p>

@@ -8,7 +8,6 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.views import View
 from validate_email import validate_email
-
 from apps.accounts.models import User
 from apps.cars.car_utils import body_types
 from apps.dealers.models import Dealer
@@ -25,22 +24,28 @@ class HomeView(View):
         latest_cars = Car.objects.all().order_by("-date")[:6]
         dealers_in_same_state = Dealer.objects.filter(
             user__profile__state=request.user.profile.state) if request.user.is_authenticated else None
-        top_manufacturers = Car.objects.values('manufacturer', 'manufacturer_logo').annotate(total_cars=Count('id')).order_by('-total_cars')[:6]
+        top_brands = Car.objects.values('brand', 'brand_logo').annotate(total_cars=Count('id')).order_by('-total_cars')[:6]
         # Get models
         brand_file_path = "benny_dealz/json_files/car-list.json"
         brands = get_car_brands(brand_file_path)
         context = {
-            "models": brands,
+            "brands": brands,
             "body_types": body_types,
             "years": list(range(1995, datetime.date.today().year)),
             "cars": latest_cars,
             "dealers": dealers_in_same_state,
-            "top_manufacturers": top_manufacturers,
+            "top_brands": top_brands,
         }
         return render(request, self.template_name, context)
 
 
 class FilterCarView(View):
+    def get(self, request, *args, **kwargs):
+        file_path = "benny_dealz/json_files/countries_states_cities.json"
+        states = get_states(file_path, "Nigeria")
+        context = {
+            "states": states,
+        }
 
     def post(self, request):
         condition = request.POST.get('condition')
@@ -82,9 +87,9 @@ class FilterCarView(View):
         if condition:
             filters['condition'] = condition
         if brand:
-            filters['manufacturer'] = brand
+            filters['brand'] = brand
         if model:
-            filters['make'] = model
+            filters['model'] = model
         if year:
             filters['model_year'] = year
         if milage_min and milage_max:
@@ -295,6 +300,7 @@ def check_business_email(request):
     if Dealer.objects.filter(business_email=business_email).exists():
         return HttpResponse("<small class='text-danger'>Sorry email already in use.</small>")
     return HttpResponse("<small class='text-success'>Email is available.</small>")
+
 
 # def log_messages(request):
 #     if request.is_ajax() and request.method == "POST":

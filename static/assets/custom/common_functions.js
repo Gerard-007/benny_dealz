@@ -119,3 +119,65 @@ $(document).ready(function () {
         });
     });
 });
+
+
+$(document).ready(function () {
+    // Add a click event listener to all category-item links
+    $('.brand-item').on('click', function (event) {
+        event.preventDefault();
+
+        var brand = $(this).data('brand');
+
+        $.ajax({
+            type: 'POST',
+            url: "/cars/car_filter/",
+            data: {
+                brand: brand,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: function (data) {
+                console.log("Data sent")
+                // Clear existing car list
+                $('#car-list').empty();
+
+                // Update car list with filtered data
+                $.each(data.filtered_cars, function (index, car) {
+                    var carItem = `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="car-item">
+                                <div class="car-img">
+                                    <span class="car-status status-1">${car.status}</span>
+                                    <img src="${car.get_main_image}" style="height:150px; width:100%">
+                                    <div class="car-btns">
+                                        <a type="button" id="favorite-button" data-car-id="${car.slug}">
+                                            ${car.favorited_by ? '<i class="fas fa-xmark" id="remove_favorite_icon"></i>' : '<i class="far fa-heart" id="add_favorite_icon"></i>'}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="car-content">
+                                    <div class="car-top">
+                                        <h4><a href="/cars/${car.slug}">${car.get_car_name}</a></h4>
+                                    </div>
+                                    <ul class="car-list">
+                                        <li><i class="far fa-steering-wheel"></i>${car.transmission}</li>
+                                        <li><i class="far fa-road"></i>${car.power}</li>
+                                        <li><i class="far fa-car"></i>Model: ${car.model_year}</li>
+                                        <li><i class="far fa-gas-pump"></i>${car.fuel}</li>
+                                    </ul>
+                                    <div class="car-footer">
+                                        <span class="car-price">₦${car.price.toLocaleString()}</span>
+                                        <a href="/cars/${car.slug}" class="theme-btn"><span class="far fa-eye"></span>Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+
+                    $('#car-list').append(carItem);
+                });
+            },
+            error: function (error) {
+                console.log('Error:', error);
+            }
+        });
+    });
+});

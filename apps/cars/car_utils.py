@@ -85,10 +85,11 @@ TRANSMISSION = (
 )
 
 FUEL_TYPE = (
-    ('Diesel', 'Diesel'),
-    ('PetroleumGas', 'PetroleumGas'),
     ('Petrol', 'Petrol'),
-    ('Hybrid', 'Hybrid')
+    ('Diesel', 'Diesel'),
+    ('CNG', 'CNG'),
+    ('Hybrid', 'Hybrid'),
+    ('Electric', 'Electric')
 )
 
 BODY_TYPE = (

@@ -8,43 +8,6 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'assets/custom/multi_upload_v2.css' %}">
-
-    <style>
-        .car-select {
-            width: 100%;
-            height: 55px;
-            line-height: 54px;
-            border-radius: 10px;
-            font-size: 16px;
-            color: #757F95;
-            padding-left: 20px;
-        }
-
-        .car-select::after {
-            width: 9px;
-            height: 9px;
-            right: 20px;
-            margin-top: -7px
-        }
-
-        .car-select:focus {
-            border-color: #FFC711;
-        }
-
-        .car-select .list {
-            width: 100%;
-            border: none;
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 0 40px 5px rgb(0 0 0/5%)
-        }
-
-        .car-select .option.focus,.car-select .option.selected.focus,.car-select .option:hover {
-            border-radius: 8px;
-            background: rgba(239,23,33,.05);
-            color: #FFC711;
-        }
-    </style>
 {% endblock css %}
 
 
@@ -165,32 +128,12 @@
                                                         {% render_field form.price|attr:"required" class="form-control" placeholder=form.price.help_text %}
                                                     </div>
                                                 </div>
-
-<!--                                                <h6 class="fw-bold mt-4 mb-1">Location</h6>-->
-<!--                                                <div class="col-lg-6">-->
-<!--                                                    <div class="form-group">-->
-<!--                                                        <label>Address</label>-->
-<!--                                                        <input type="text" class="form-control" placeholder="Enter address">-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                                <div class="col-lg-6">-->
-<!--                                                    <div class="form-group">-->
-<!--                                                        <label>City</label>-->
-<!--                                                        <input type="text" class="form-control" placeholder="Enter city">-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                                <div class="col-lg-6">-->
-<!--                                                    <div class="form-group">-->
-<!--                                                        <label>State</label>-->
-<!--                                                        <input type="text" class="form-control" placeholder="Enter state">-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                                <div class="col-lg-6">-->
-<!--                                                    <div class="form-group">-->
-<!--                                                        <label>Zip Code</label>-->
-<!--                                                        <input type="text" class="form-control" placeholder="Enter zip code">-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label>Address <small class="text-danger">*</small></label>
+                                                        {% render_field form.address|attr:"required" class="form-control" placeholder=form.address.help_text %}
+                                                    </div>
+                                                </div>
 
                                                 <h6 class="fw-bold mt-4 mb-1">Detailed Information</h6>
                                                 <div class="col-lg-12">
@@ -324,9 +267,15 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-12 my-4">
-                                                    <button type="button" class="theme-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                        Publish Car
-                                                    </button>
+                                                    {% if dealer.addresses %}
+                                                        <button type="button" class="theme-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                            Publish Car
+                                                        </button>
+                                                    {% else %}
+                                                        <a href="{% url 'dealers:dealer_address_list' %}" class="theme-btn">
+                                                            Add Address
+                                                        </a>
+                                                    {% endif %}
                                                 </div>
                                             </div>
 

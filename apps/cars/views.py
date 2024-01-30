@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import EmailMessage
-from django.db.models import F
+from django.db.models import F, Count, Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -11,8 +11,7 @@ from django.views.generic.base import View
 from apps.dealers.models import Dealer
 from apps.cars.forms import CarForm, CarSwapForm
 from apps.wallet.models import Wallet, WalletTransactions
-from benny_dealz.utils import get_car_brands, get_states_only, get_car_logo
-from .filters import CarFilter
+from benny_dealz.utils import get_car_brands, get_states_only, get_car_logo, get_states
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView
 from apps.cars.models import Car, CarSwap, Comment, Favorite, CarMedia
 from ..common.views import convert_to_true_or_false_v2
@@ -23,17 +22,23 @@ class CarListView(ListView):
     template_name = 'cars/car_list.html'
 
     def get(self, request, *args, **kwargs):
-        cars = Car.objects.all().exclude(status="Sold")
+        cars = Car.objects.filter(status='Available')
         total_cars = cars.count()
-        my_car_filter = CarFilter(request.GET, queryset=cars)
-        all_cars = my_car_filter.qs
-        cars = my_car_filter.qs
-
+        top_brands = Car.objects.filter(status='Available').values('brand', 'brand_logo').annotate(total_cars=Count('id')).order_by('-total_cars')[:6]
+        file_path = "benny_dealz/json_files/countries_states_cities.json"
+        states = get_states(file_path, "Nigeria")
+        states_with_count = []
+        for state in states:
+            cars_count = Car.objects.filter(dealer__addresses__state=state, status='Available').count()
+            states_with_count.append({
+                "state": state,
+                "cars_count": cars_count
+            })
         context = {
-            'my_car_filter': my_car_filter,
+            "states": states_with_count,
             'cars': cars,
             'total_cars': total_cars,
-            'all_cars': all_cars,
+            "top_brands": top_brands,
         }
         return render(request, self.template_name, context)
 
@@ -41,7 +46,7 @@ class CarListView(ListView):
 class CarDetailView(DetailView):
     model = Car
     context_object_name = "car"
-    template_name = 'cars/test.html'
+    template_name = 'cars/car_detail.html'
 
     def get(self, request, *args, **kwargs):
         # Increment the view_count when a user accesses the details page
@@ -119,10 +124,10 @@ class CarCreateView(LoginRequiredMixin, View):
         print(f"{my_files[0]} Saved successfully")
         file_path = "benny_dealz/json_files/car-list.json"
         del my_files[0]
-        car.manufacturer = brand
-        car.make = model
-        car.manufacturer_logo = get_car_logo(file_path, brand)
-        print(f"manufacturer_logo: {car.manufacturer_logo}")
+        car.brand = brand
+        car.model = model
+        car.brand_logo = get_car_logo(file_path, brand)
+        print(f"brand_logo: {car.brand_logo}")
         car.save()
         for media in my_files:
             img_doc = CarMedia.objects.create(
@@ -226,8 +231,8 @@ class CarSwapCreateView(LoginRequiredMixin, View):
         """)
         # try:
         car_swap = CarSwap(
-            manufacturer=brand,
-            make=model,
+            brand=brand,
+            model=model,
             model_year=model_year,
             body_type=body_type,
             status=status,
@@ -296,27 +301,6 @@ class FavouriteCars(LoginRequiredMixin, View):
         return render(request, 'cars/car_favourite.html', context)
 
 
-# class AddFavoriteView(LoginRequiredMixin, View):
-#     def post(self, request, car_id):
-#         user = request.user
-#         car = Car.objects.get(id=car_id)
-#         favorite = Favorite.objects.filter(user=user, car=car)
-#         if not favorite.exists():
-#             Favorite.objects.create(user=user, car=car)
-#             return JsonResponse({
-#                 "status": "success",
-#                 "message": "Car added to favorites",
-#                 'is_favorite': True,  # Send the favorite ID back to the frontend
-#             })
-#         else:
-#             favorite.delete()
-#             return JsonResponse({
-#                 "status": "error",
-#                 "message": "Removed from favorite",
-#                 'is_favorite': False,
-#             })
-
-
 class ToggleFavoriteView(LoginRequiredMixin, View):
 
     def post(self, request, car_id):
@@ -358,7 +342,7 @@ class RemoveFavoriteView(LoginRequiredMixin, View):
 
 
 # ============== Other Car Features ================
-class CarFeatureUpgrade(LoginRequiredMixin, View):
+class CarFeatureUpgrade(View):
     def get(self, request, slug):
         current_dealer = Dealer.objects.get(name=self.request.user)
         car = get_object_or_404(Car, slug=slug)
@@ -409,63 +393,146 @@ class CarFeatureUpgrade(LoginRequiredMixin, View):
         messages.success(request, arg3)
 
 
-# class CarCreateView(LoginRequiredMixin, View):
-#     template_name = "cars/car_form.html"
-#
-#     def get(self, request, *args, **kwargs):
-#         car_form = CarForm()
-#         dealer = Dealer.objects.get(user=self.request.user)
-#         wallet = Wallet.objects.get(dealer=dealer)
-#         upload_price = 3000
-#         context = {
-#             'form': car_form,
-#             'wallet': wallet,
-#             'upload_price': upload_price,
-#         }
-#         return render(request, self.template_name, context)
-#
-#     def post(self, request):
-#         car_form = CarForm(request.POST, request.FILES)
-#         get_current_dealer = Dealer.objects.get(name=self.request.user)
-#         wallet = Wallet.objects.get(dealer=get_current_dealer)
-#         upload_price = 3000
-#         if wallet.balance > upload_price:
-#             if car_form.is_valid():
-#                 current_car = car_form.save(commit=False)
-#                 current_car.dealer = get_current_dealer
-#                 wallet.balance = F('balance') - upload_price
-#                 wallet.save()
-#                 current_car.save()
-#                 messages.success(request, "Car uploaded successfully...")
-#                 # Update user wallet transaction
-#                 wallet_transaction = WalletTransactions(
-#                     wallet=wallet,
-#                     transaction_id=wallet.virtual_account_ref,
-#                     currency=wallet.currency,
-#                     amount=float(upload_price),
-#                     payment_status="successful",
-#                 )
-#                 wallet_transaction.save()
-#                 print("Transaction success wallet transactions updated")
-#                 return redirect('accounts:profile', self.request.user.slug)
-#         else:
-#             wallet_transaction = WalletTransactions(
-#                 wallet=wallet,
-#                 transaction_id=wallet.virtual_account_ref,
-#                 currency=wallet.currency,
-#                 amount=float(upload_price),
-#                 payment_status="failed",
-#             )
-#             wallet_transaction.save()
-#             print("Transaction failed wallet transactions updated")
-#             messages.error(request, "Balance is low fund your wallet to upload cars.")
-#             return redirect("wallet:fund_wallet", wallet.uid)
-#
-#         context = {
-#             'form': car_form,
-#             'wallet': wallet,
-#             'upload_price': upload_price,
-#         }
-#         messages.warning(request, "Car upload failed check your wallet balance and try again...")
-#         return render(request, self.template_name, context)
-#
+class CarFilterView(LoginRequiredMixin, View):
+    def get(self, request, **kwargs):
+        global inspected_count, not_inspected_count, price_ranges, transmission_counts, fuel_type_counts
+        file_path = "benny_dealz/json_files/countries_states_cities.json"
+        states = get_states(file_path, "Nigeria")
+
+        data_for_frontend = []
+
+        for state in states:
+            state_data = {
+                "state": state,
+                "cars_count": Car.objects.filter(dealer__addresses__state=state, status='Available').count(),
+                "brands": [],
+                "inspected": 0,
+                "not_inspected": 0,
+                "price_ranges": [],
+                "transmissions": {},
+                "fuel_type": {}
+            }
+            brands_for_state = Car.objects.filter(dealer__addresses__state=state, status='Available').values('brand').annotate(total_cars=Count('id'))
+            for brand in brands_for_state:
+                state_data["brands"].append({
+                    "brand": brand['brand'],
+                    "cars_count": brand['total_cars']
+                })
+            data_for_frontend.append(state_data)
+
+            # Get counts for other filters
+            inspected_count = Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(car_inspection=True)).count()
+            state_data["inspected"] = inspected_count
+
+            not_inspected_count = Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(car_inspection=False)).count()
+            state_data["not_inspected"] = not_inspected_count
+
+            # Append counts to lists
+            state_data["price_ranges"].append({
+                "range": "Below ₦1m",
+                "count": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(price__lte=1000000)).count()
+            })
+            state_data["price_ranges"].append({
+                "range": "₦1m - ₦2m",
+                "count": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(price__range=(1000000, 2000000))).count()
+            })
+            state_data["price_ranges"].append({
+                "range": "₦2m - ₦4m",
+                "count": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(price__range=(2000000, 4000000))).count()
+            })
+            state_data["price_ranges"].append({
+                "range": "₦4m - ₦6m",
+                "count": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(price__range=(4000000, 6000000))).count()
+            })
+            state_data["price_ranges"].append({
+                "range": "₦6m - ₦10m",
+                "count": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(price__range=(6000000, 10000000))).count()
+            })
+            state_data["price_ranges"].append({
+                "range": "More than ₦10m",
+                "count": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(price__gt=10000000)).count()
+            })
+
+            state_data["transmissions"] = {
+                "Automatic": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(transmission='Automatic')).count(),
+                "Manual": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(transmission='Manual')).count(),
+                "Duplex": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(transmission='Duplex')).count(),
+            }
+
+            state_data["fuel_type"] = {
+                "Petrol": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(fuel='Petrol')).count(),
+                "Diesel": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(fuel='Diesel')).count(),
+                "CNG": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(fuel='CNG')).count(),
+                "Hybrid": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(fuel='Hybrid')).count(),
+                "Electric": Car.objects.filter(Q(dealer__addresses__state=state) & Q(status='Available') & Q(fuel='Electric')).count(),
+            }
+        return JsonResponse({
+            "data": data_for_frontend
+        })
+
+    def post(self, request, **kwargs):
+        brand = request.POST.get('brand')
+        state = request.POST.get('state', '')
+        car_brand = request.POST.get('car_brand', '')
+        inspected = request.POST.get('inspected', '')
+        price_range = request.POST.get('price', '')
+        transmission = request.POST.getlist('transmission', [])
+        fuel_type = request.POST.getlist('fuel_type', [])
+
+        print(f"""
+            brand: {brand}
+            state: {state}
+            car_brand: {car_brand}
+            inspected: {inspected}
+            price_range: {price_range}
+            transmission: {transmission}
+            fuel_type: {fuel_type}
+        """)
+
+        # Filter cars based on the received parameters
+        filtered_cars = Car.objects.filter(status='Available')
+
+        if state:
+            filtered_cars = filtered_cars.filter(dealer__addresses__state=state)
+
+        if car_brand:
+            filtered_cars = filtered_cars.filter(brand=car_brand)
+
+        if brand:
+            filtered_cars = filtered_cars.filter(brand=brand)
+
+        if inspected == 'inspected':
+            filtered_cars = filtered_cars.filter(car_inspection=True)
+        elif inspected == 'not_inspected':
+            filtered_cars = filtered_cars.filter(car_inspection=False)
+
+        if price_range:
+            min_price, max_price = map(int, price_range.split(','))
+            filtered_cars = filtered_cars.filter(price__range=(min_price, max_price))
+
+        if transmission:
+            filtered_cars = filtered_cars.filter(transmission__in=transmission)
+
+        if fuel_type:
+            filtered_cars = filtered_cars.filter(fuel__in=fuel_type)
+
+        print(f"filtered_cars: {filtered_cars}")
+
+        data_for_frontend = {
+            "filtered_cars": [
+                {
+                    "slug": car.slug,
+                    "status": car.status,
+                    "get_main_image": car.get_main_image,
+                    "favorited_by": request.user in car.favorited_by.all(),
+                    "get_car_name": car.get_car_name,
+                    "transmission": car.transmission,
+                    "power": car.power,
+                    "model_year": car.model_year,
+                    "fuel": car.fuel,
+                    "price": car.price,
+                }
+                for car in filtered_cars
+            ]
+        }
+        return JsonResponse(data_for_frontend)

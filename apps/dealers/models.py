@@ -1,6 +1,5 @@
 import cloudinary
 from cloudinary.models import CloudinaryField
-from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 from django.db.models.signals import pre_save, pre_delete, post_save
@@ -9,7 +8,6 @@ from django.urls import reverse
 from urllib.parse import urlencode
 import requests
 from phone_field import PhoneField
-
 from apps.accounts.models import User
 from benny_dealz.utils import unique_slug_generator
 
@@ -114,12 +112,20 @@ class DealerAddress(models.Model):
     longitude = models.DecimalField(decimal_places=6, max_digits=10, null=True, blank=True)
     latitude = models.DecimalField(decimal_places=6, max_digits=10, null=True, blank=True)
 
+    def __str__(self):
+        if len(self.address_line_1) > 20:
+            self.address_line_1 = f"{self.address_line_1[:20]}..."
+            return f"{self.address_line_1}, {self.city}, {self.state}"
+        return f"{self.address_line_1}, {self.city}, {self.state} {self.country}"
+
     @property
     def get_dealer_address(self):
-        if len(self.address_line_1) > 10:
-            self.address_line_1 = f"{self.address_line_1[:10]}..."
+        # if len(self.address_line_1) > 10:
+        #     self.address_line_1 = f"{self.address_line_1[:10]}..."
+        #     return f"{self.address_line_1}, {self.address_line_2}, {self.city}, {self.state}"
+        if self.address_line_2:
             return f"{self.address_line_1}, {self.address_line_2}, {self.city}, {self.state}"
-        return f"{self.address_line_1}, {self.address_line_2}, {self.city}, {self.state}"
+        return f"{self.address_line_1}, {self.city}, {self.state} {self.country}"
 
 
 # Update <is_a_dealer> to <False> once instance is deleted

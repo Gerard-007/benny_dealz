@@ -89,7 +89,7 @@
             </div>
             {% if request.user.is_a_dealer %}
               <div class="nav-right-btn mt-2">
-                <a href="{% url 'cars:create' as car_create_url %}" class="theme-btn">
+                <a href="{% url 'cars:create' %}" class="theme-btn">
                   <span class="far fa-arrow-right-to-arc"></span>
                   Add Listing
                 </a>

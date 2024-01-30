@@ -4,8 +4,8 @@ from apps.cars.car_utils import MANUFACTURERS, STATUS, YEAR_CHOICES, CATEGORY, B
 
 
 class CarFilter(django_filters.FilterSet):
-    make = django_filters.CharFilter(lookup_expr='icontains')
-    # manufacturer = django_filters.ModelChoiceFilter(choices=MANUFACTURERS, null_label='Any', null_value='')
+    model = django_filters.CharFilter(lookup_expr='icontains')
+    # brand = django_filters.ModelChoiceFilter(choices=MANUFACTURERS, null_label='Any', null_value='')
     # transmission = django_filters.ModelChoiceFilter(choices=TRANSMISSION, null_label='Any', null_value='')
     # status = django_filters.ModelChoiceFilter(choices=STATUS, null_label='Any', null_value='')
     # condition = django_filters.ModelChoiceFilter(choices=CATEGORY, null_label='Any', null_value='')
@@ -22,7 +22,7 @@ class CarFilter(django_filters.FilterSet):
         model = Car
         fields = [
             'model_year',
-            'manufacturer',
+            'brand',
             'status',
             'condition',
             'body_type',

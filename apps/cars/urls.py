@@ -4,7 +4,7 @@ from apps.cars import views
 from apps.cars.views import ToggleFavoriteView
 
 urlpatterns = [
-    # path('dashboard/', views.CarDashBoard.as_view(), name='car_dashboard'),
+    path('car_filter/', csrf_exempt(views.CarFilterView.as_view()), name='car_filter'),
     path('featuring/<slug:slug>/', views.CarFeatureUpgrade.as_view(), name='car_featuring'),
     path('swap_list/', views.CarSwapListView.as_view(), name='swap_list'),
     path('swap_create/', views.CarSwapCreateView.as_view(), name='swap_create'),

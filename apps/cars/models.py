@@ -1,6 +1,5 @@
 import datetime
 import random
-
 import cloudinary
 from cloudinary.models import CloudinaryField
 from django.conf import settings
@@ -19,11 +18,21 @@ class Favorite(models.Model):
     car = models.ForeignKey('Car', on_delete=models.CASCADE, related_name='user_favorites')
 
 
+class CarQuerySet(models.query.QuerySet):
+    def available_car(self):
+        return self.filter(status="Available")
+
+
+class CarManager(models.Manager):
+    def get_queryset(self):
+        return CarQuerySet(self.model, using=self._db)
+
+
 class Car(models.Model):
     dealer = models.ForeignKey('dealers.Dealer', on_delete=models.CASCADE, related_name='cars')
-    manufacturer = models.CharField(max_length=100)
-    make = models.CharField(max_length=100)
-    manufacturer_logo = models.URLField(blank=True, null=True)
+    brand = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+    brand_logo = models.URLField(blank=True, null=True)
     slug = models.SlugField(unique=True)
     status = models.CharField(max_length=100, choices=STATUS, default="Available")
     car_inspection = models.BooleanField(default=False)
@@ -36,7 +45,12 @@ class Car(models.Model):
         blank=True,
         null=True,
         help_text="Main image of the car",
-        transformation={"quality": "auto:eco"},
+        transformation={
+            "quality": "auto:eco",
+            "width": 500,  # Specify the desired width
+            "height": 300,  # Specify the desired height
+            "crop": "fill",  # Specify the crop mode (fill, fit, etc.)
+        },
         resource_type="image",
     )
     mileage = models.IntegerField(blank=True, null=True, help_text='Enter valid mileage (1-1000000)')
@@ -48,6 +62,7 @@ class Car(models.Model):
     fuel = models.CharField(max_length=100, choices=FUEL_TYPE)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     description = models.TextField()
+    address = models.ForeignKey("dealers.DealerAddress", on_delete=models.DO_NOTHING, null=True)
 
     date = models.DateField(auto_now_add=True)
     is_featured = models.BooleanField(default=False)
@@ -69,21 +84,23 @@ class Car(models.Model):
     bluetoothHandsFree = models.BooleanField(default=False)
     audioSystem = models.BooleanField(default=False)
 
+    objects = CarManager()
+
     class Meta:
         verbose_name_plural = "Cars"
         ordering = ("-date",)
-        unique_together = ["manufacturer", "make", "dealer"]
+        unique_together = ["brand", "model", "dealer"]
 
     def __str__(self):
-        return f'{self.dealer.user}-{self.manufacturer}'
+        return f'{self.dealer.user}-{self.brand}'
 
     @property
     def get_car_name(self):
-        return f'{self.manufacturer}-{self.make}-{self.model_year}'
+        return f'{self.brand}-{self.model}-{self.model_year}'
 
     @property
     def name(self):
-        return f'Car-{self.manufacturer}-{self.make}-{self.model_year}-{random.randint(0000, 9999)}'
+        return f'Car-{self.brand}-{self.model}-{self.model_year}-{random.randint(0000, 9999)}'
 
     def get_absolute_url(self):
         return reverse('cars:detail', kwargs={'slug': self.slug})
@@ -114,7 +131,12 @@ class CarMedia(models.Model):
         blank=True,
         null=True,
         help_text="Main image of the car",
-        transformation={"quality": "auto:eco"},
+        transformation={
+            "quality": "auto:eco",
+            "width": 500,  # Specify the desired width
+            "height": 300,  # Specify the desired height
+            "crop": "fill",  # Specify the crop mode (fill, fit, etc.)
+        },
         resource_type="image",
     )
     uploaded_by = models.ForeignKey(User, related_name="my_car_images", on_delete=models.CASCADE, blank=True)
@@ -130,8 +152,8 @@ def car_images_delete(sender, instance, **kwargs):
 
 
 class CarSwap(models.Model):
-    manufacturer = models.CharField(max_length=100, choices=MANUFACTURERS)
-    make = models.CharField(max_length=100)
+    brand = models.CharField(max_length=100, choices=MANUFACTURERS)
+    model = models.CharField(max_length=100)
     model_year = models.IntegerField('year', choices=YEAR_CHOICES, default=datetime.datetime.now().year)
     body_type = models.CharField(max_length=100, choices=BODY_TYPE)
     status = models.CharField(max_length=100, choices=SWAP_STATUS, default="Swap")
@@ -144,7 +166,12 @@ class CarSwap(models.Model):
         blank=True,
         null=True,
         help_text="Main image of the car",
-        transformation={"quality": "auto:eco"},
+        transformation={
+            "quality": "auto:eco",
+            "width": 500,  # Specify the desired width
+            "height": 300,  # Specify the desired height
+            "crop": "fill",  # Specify the crop mode (fill, fit, etc.)
+        },
         resource_type="image",
     )
     price = models.DecimalField(max_digits=19, decimal_places=2, blank=True, null=True)
@@ -164,11 +191,11 @@ class CarSwap(models.Model):
 
     @property
     def get_car_swap_name(self):
-        return f'Swap-{self.manufacturer}-{self.make}-{self.model_year}'
+        return f'Swap-{self.brand}-{self.model}-{self.model_year}'
 
     @property
     def name(self):
-        return f'Swap-{self.manufacturer}-{self.make}-{self.model_year}-{self.pk}'
+        return f'Swap-{self.brand}-{self.model}-{self.model_year}-{self.pk}'
 
 
 @receiver(pre_save, sender=CarSwap)
@@ -208,7 +235,7 @@ def user_add_comment_property(sender, instance, *args, **kwargs):
     comm_car = comment.car
     sender = comment.by
     text_preview = comment.content[:50]
-    message = f"{comment.by} just commented at {comm_car.manufacturer}"
+    message = f"{comment.by} just commented at {comm_car.brand}"
     notify = Notification(
         comment=comment,
         from_user=sender,

@@ -1,17 +1,47 @@
-{% extends 'layout.html' %}
 {% load static %}
 {% load humanize %}
 
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}{{car.get_car_name}}{% endblock title %}
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content>
+    <meta name="keywords" content>
 
+    <title>{{car}}|benny_dealz</title>
 
-{% block css %}
+    <link rel="icon" type="image/x-icon" href="https://bit.ly/benny_dealz_logo">
+
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/all-fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/magnific-popup.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/nice-select.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/flex-slider.min.css' %}">
-{% endblock css %}
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  </head>
 
 
-{% block content %}
+  <body>
+
+    <div class="preloader">
+      <div class="loader-ripple">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- Navbar-->
+    {% include 'includes/navbar.html' %}
+
+    <!-- Sidebar popup-->
+    {% include 'includes/sidebar_popup.html' %}
 
     <main class="main">
         <div class="car-item-single bg py-120">
@@ -22,7 +52,7 @@
                             <div class="car-single-details">
                                 <div class="car-single-widget">
                                     <div class="car-single-top">
-                                        <span class="car-status status-1">Brand New</span>
+                                        <span class="car-status status-1">{{car.condition}}</span>
                                         <h3 class="car-single-title">{{car.get_car_name}}</h3>
                                         <ul class="car-single-meta">
                                             <li><i class="far fa-clock"></i> Listed On: {{car.date|naturalday}}</li>
@@ -33,24 +63,12 @@
                                         <div class="item-gallery">
                                             <div class="flexslider-thumbnails">
                                                 <ul class="slides">
-<!--                                                    <li data-thumb="{% static 'assets/img/car/single-1.jpg' %}">-->
-<!--                                                        <img src="{% static 'assets/img/car/single-1.jpg' %}" alt="#">-->
-<!--                                                    </li>-->
-<!--                                                    <li data-thumb="{% static 'assets/img/car/single-2.jpg' %}">-->
-<!--                                                        <img src="{% static 'assets/img/car/single-2.jpg' %}" alt="#">-->
-<!--                                                    </li>-->
-<!--                                                    <li data-thumb="{% static 'assets/img/car/single-3.jpg' %}">-->
-<!--                                                        <img src="{% static 'assets/img/car/single-3.jpg' %}" alt="#">-->
-<!--                                                    </li>-->
-<!--                                                    <li data-thumb="{% static 'assets/img/car/single-4.jpg' %}">-->
-<!--                                                        <img src="{% static 'assets/img/car/single-4.jpg' %}" alt="#">-->
-<!--                                                    </li>-->
                                                     <li data-thumb="{{car.get_main_image}}">
-                                                        <img src="{{car.get_main_image}}" alt="#">
+                                                        <img src="{{car.get_main_image}}" width="100%" height="100px">
                                                     </li>
                                                     {% for i in car.car_images.all %}
                                                         <li data-thumb="{{i.image.url}}">
-                                                            <img src="{{i.image.url}}" alt="#">
+                                                            <img src="{{i.image.url}}" width="100%" height="100px">
                                                         </li>
                                                     {% endfor %}
                                                 </ul>
@@ -339,6 +357,7 @@
                                     <div class="car-single-author-content">
                                         <h5>{{car.dealer.user.profile.get_full_name}}</h5>
                                         <span>{{car.dealer.user.email}}</span>
+                                        <span>{{car.dealer.business_phone}}</span>
 <!--                                        <div class="car-single-author-social">-->
 <!--                                            <a href="#"><i class="fab fa-facebook"></i></a>-->
 <!--                                            <a href="#"><i class="fab fa-instagram"></i></a>-->
@@ -348,30 +367,30 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="car-single-widget">
-                                <h5 class="mb-3">Message Dealer</h5>
-                                <div class="car-single-form">
-                                    <form>
-                                        {% if not request.user.is_authenticated %}
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" placeholder="Enter Name">
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" placeholder="Enter Email">
-                                            </div>
-                                        {% endif %}
-                                        <div class="form-group">
-                                            <textarea class="form-control" rows="3" placeholder="Write Message"></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                            <button type="button" class="theme-btn">
-                                                Send Now
-                                                <i class="fas fa-arrow-right-long"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+<!--                            <div class="car-single-widget">-->
+<!--                                <h5 class="mb-3">Message Dealer</h5>-->
+<!--                                <div class="car-single-form">-->
+<!--                                    <form>-->
+<!--                                        {% if not request.user.is_authenticated %}-->
+<!--                                            <div class="form-group">-->
+<!--                                                <input type="text" class="form-control" placeholder="Enter Name">-->
+<!--                                            </div>-->
+<!--                                            <div class="form-group">-->
+<!--                                                <input type="text" class="form-control" placeholder="Enter Email">-->
+<!--                                            </div>-->
+<!--                                        {% endif %}-->
+<!--                                        <div class="form-group">-->
+<!--                                            <textarea class="form-control" rows="3" placeholder="Write Message"></textarea>-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group">-->
+<!--                                            <button type="button" class="theme-btn">-->
+<!--                                                Send Now-->
+<!--                                                <i class="fas fa-arrow-right-long"></i>-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+<!--                                    </form>-->
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
                     </div>
                     {% if similar_cars %}
@@ -424,9 +443,26 @@
         </div>
     </main>
 
-{% endblock %}
+    <!-- Footer-->
+    {% include "includes/footer.html" %}
 
+    <a href="#" id="scroll-top"><i class="far fa-arrow-up"></i></a>
 
-{% block js %}
+    <script src="{% static 'assets/js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'assets/js/modernizr.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'assets/js/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.appear.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'assets/js/counter-up.js' %}"></script>
+    <script src="{% static 'assets/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'assets/js/wow.min.js' %}"></script>
     <script src="{% static 'assets/js/flex-slider.js' %}"></script>
-{% endblock js %}
+    <script src="{% static 'assets/js/main.js' %}"></script>
+  </body>
+
+</html>

@@ -2,190 +2,162 @@
 {% load static %}
 {% load humanize %}
 
-
 {% block title %}All Cars{% endblock title %}
 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'assets/custom/car_select.css' %}">
+{% endblock css %}
 
 {% block content %}
 
     <main class="main">
-
         <div class="car-area grid bg py-120">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-3">
-                        <div class="car-sidebar">
-                            <div class="car-widget">
-                                <div class="car-search-form">
-                                    <h4 class="car-widget-title">Search</h4>
-                                    <form action="#">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" placeholder="Search">
-                                            <button type="search"><i class="far fa-search"></i></button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="car-widget">
-                                <h4 class="car-widget-title">Brands</h4>
-                                <ul>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="brand">
-                                            <label class="form-check-label" for="brand"> All Brands</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="brand1">
-                                            <label class="form-check-label" for="brand1"> BMW</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" checked type="checkbox" id="brand2">
-                                            <label class="form-check-label" for="brand2"> Toyota</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="brand3">
-                                            <label class="form-check-label" for="brand3"> Ferrari</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" checked type="checkbox" id="brand4">
-                                            <label class="form-check-label" for="brand4"> Audi</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="brand5">
-                                            <label class="form-check-label" for="brand5"> Tesla</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="brand6">
-                                            <label class="form-check-label" for="brand6"> Mercedes</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="brand7">
-                                            <label class="form-check-label" for="brand7"> Hyundai</label>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="car-widget">
-                                <h4 class="car-widget-title">Price Range</h4>
-                                <div class="price-range-box">
-                                    <div class="price-range-input">
-                                        <input type="text" id="price-amount" readonly>
+                        <form id="filter-form">
+                            <div class="car-sidebar">
+                                <div class="car-widget">
+                                    <div class="car-search-form">
+                                        <h4 class="car-widget-title">Location</h4>
+                                        <select class="car-select" id="state" name="state">
+                                            <option value>Choose</option>
+                                            {% for state in states %}
+                                                <option value="{{ state.state }}">{{ state.state }} * {{ state.cars_count }} ads</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
-                                    <div class="price-range"></div>
+
+                                    <h4 class="car-widget-title mt-5">Brand</h4>
+                                    <div class="form-group">
+                                        <select class="car-select" id="car_brand" name="car_brand">
+                                        </select>
+                                    </div>
+<!--                                    <h4 class="car-widget-title mt-5">Model</h4>-->
+<!--                                    <div class="form-group">-->
+<!--                                      <select class="form-control" multiple id="car_model" name="car_model">-->
+<!--                                          <option value>Choose</option>-->
+<!--                                      </select>-->
+<!--                                    </div>-->
+
+                                    <h4 class="car-widget-title mt-5">Inspected Cars</h4>
+                                    <ul>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" id="inspected" name="inspected">
+                                                <label class="form-check-label" for="inspected"> Inspected</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" id="not_inspected" name="inspected">
+                                                <label class="form-check-label" for="inspected"> Not Inspected</label>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <h4 class="car-widget-title mt-5">Price Range</h4>
+                                    <div class="price-range-box">
+                                        <select class="car-select" id="price" name="price">
+                                            <option value="100000, 1000000" id="one_m">Below ₦1m</option>
+                                            <option value="1000000, 2000000" id="one_two_m">₦1m - ₦2m</option>
+                                            <option value="2000000, 4000000" id="two_four_m">₦2m - ₦4m</option>
+                                            <option value="4000000, 6000000" id="four_six_m">₦4m - ₦6m</option>
+                                            <option value="6000000, 10000000" id="six_ten_m">₦6m - ₦10m</option>
+                                            <option value="10000000, 1000000000" id="ten_m">More than ₦10m</option>
+                                        </select>
+                                    </div>
+
+                                    <h4 class="car-widget-title mt-5">Transmission</h4>
+                                    <ul>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="transmission" name="transmission">
+                                                <label class="form-check-label"> Automatic</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="transmission" name="transmission">
+                                                <label class="form-check-label"> Manual</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="transmission" name="transmission">
+                                                <label class="form-check-label"> Duplex</label>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <h4 class="car-widget-title mt-5">Fuel Type</h4>
+                                    <ul>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="fuel_type" name="fuel_type" value="Petrol">
+                                                <label class="form-check-label"> Petrol</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="fuel_type" name="fuel_type" value="Diesel">
+                                                <label class="form-check-label"> Diesel</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="fuel_type" name="fuel_type" value="CNG">
+                                                <label class="form-check-label"> CNG</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="fuel_type" name="fuel_type" value="Hybrid">
+                                                <label class="form-check-label"> Hybrid</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="fuel_type" name="fuel_type" value="Electric">
+                                                <label class="form-check-label"> Electric</label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="car-widget">
+                                    <button class="theme-btn" type="button" id="filter_button">
+                                        <span class="far fa-filter"></span>
+                                        Find Your Car
+                                    </button>
                                 </div>
                             </div>
-                            <div class="car-widget">
-                                <h4 class="car-widget-title">Transmission</h4>
-                                <ul>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="tran1">
-                                            <label class="form-check-label" for="tran1"> Automatic</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" checked type="checkbox" id="tran2">
-                                            <label class="form-check-label" for="tran2"> Manual</label>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="car-widget">
-                                <h4 class="car-widget-title">Fuel Type</h4>
-                                <ul>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fuel1">
-                                            <label class="form-check-label" for="fuel1"> Gas</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" checked type="checkbox" id="fuel2">
-                                            <label class="form-check-label" for="fuel2"> Hybrid</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fuel3">
-                                            <label class="form-check-label" for="fuel3"> Diesel</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fuel4">
-                                            <label class="form-check-label" for="fuel4"> Eletric</label>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="car-widget">
-                                <h4 class="car-widget-title">Features</h4>
-                                <ul>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="feature1">
-                                            <label class="form-check-label" for="feature1"> Airbag - Driver</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" checked type="checkbox" id="feature2">
-                                            <label class="form-check-label" for="feature2"> Airbag - Passenger</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="feature3">
-                                            <label class="form-check-label" for="feature3"> Alloy Wheels</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="feature4">
-                                            <label class="form-check-label" for="feature4"> Anti-lock Braking System</label>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                        </form>
                     </div>
+
 
                     <div class="col-lg-9">
                         <div class="col-md-12">
                             <div class="car-sort">
                                 <h6>Showing 1-6 of {{cars.count}} Results</h6>
-<!--                                <div class="car-sort-list-grid">-->
-<!--                                    <a class="car-sort-grid active" href="listing-grid.html"><i class="far fa-grid-2"></i></a>-->
-<!--                                    <a class="car-sort-list" href="listing-list.html"><i class="far fa-list-ul"></i></a>-->
-<!--                                </div>-->
-                                <div class="col-md-3 car-sort-box">
-                                    <select class="select">
-                                        <option value="5">Sort By Featured</option>
-                                        <option value="2">Sort By Latest</option>
-                                        <option value="3">Sort By Low Price</option>
-                                        <option value="4">Sort By High Price</option>
-                                    </select>
-                                </div>
                             </div>
                         </div>
 
+
                         <div class="row">
+                            {% for brand in top_brands %}
+                                <div class="col-6 col-md-3 col-lg-2">
+                                    <a href="#" class="brand-item wow fadeInUp" data-wow-delay=".25s" data-brand="{{ brand.brand }}">
+                                        <div class="brand-img">
+                                            <img src="{{ brand.brand_logo }}" alt="logo">
+                                        </div>
+                                        <h5>{{ brand.brand }}</h5>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+
+                        <div id="car-list" class="row">
                             {% for c in cars%}
                                 <div class="col-md-6 col-lg-4">
                                     <div class="car-item">
@@ -274,7 +246,137 @@
                 </div>
             </div>
         </div>
-
     </main>
+{% endblock %}
+
+
+{% block js %}
+
+    <script>
+        // Function to populate brands based on the selected state
+        function populateBrands(selectedState) {
+            $.ajax({
+                url: '{% url 'cars:car_filter' %}',  // Replace with the actual URL of your CarFilterView
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Populate brands dropdown based on the selected state
+                    var brandDropdown = $('#car_brand');
+                    brandDropdown.empty();
+                    // brandDropdown.append('<option value="">Choose</option>');
+
+                    var selectedStateData = data.data.find(function (stateData) {
+                        return stateData.state === selectedState;
+                    });
+
+                    if (selectedStateData) {
+                        $.each(selectedStateData.brands, function (index, brandData) {
+                            brandDropdown.append(`<option value="${brandData.brand}">${brandData.brand} * ${brandData.cars_count} ads</option>`);
+                        });
+
+                        // Update Inspected Cars count
+                        $('#inspected').next('label').html(`<span class="badge text-bg-${selectedStateData.inspected >= 1 ? 'success' : 'danger'}">${selectedStateData.inspected}</span> Inspected`);
+
+                        // Update Not Inspected count
+                        $('#not_inspected').next('label').html(`<span class="badge text-bg-${selectedStateData.not_inspected >= 1 ? 'success' : 'danger'}">${selectedStateData.not_inspected}</span> Not Inspected`);
+
+                        // Update Price Range counts
+                        $('#price option').each(function (index) {
+                            $(this).text(`${$(this).text().split('(')[0]} * ${selectedStateData.price_ranges[index].count} ads`);
+                        });
+
+                        // Update Transmission counts
+                        $('input[name="transmission"]').each(function (index) {
+                            var transmissionType = Object.keys(selectedStateData.transmissions)[index];
+                            var transmissionCount = selectedStateData.transmissions[transmissionType];
+                            $(this).next('label').html(`${$(this).next('label').text().split('(')[0]} (<span class="badge text-bg-${transmissionCount >= 1 ? 'success' : 'danger'}">${transmissionCount}</span>)`);
+                        });
+
+                        // Update Fuel Type counts
+                        $('input[name="fuel_type"]').each(function (index) {
+                            var fuelType = Object.keys(selectedStateData.fuel_type)[index];
+                            var fuelTypeCount = selectedStateData.fuel_type[fuelType];
+                            $(this).next('label').html(`${$(this).next('label').text().split('(')[0]} (<span class="badge text-bg-${fuelTypeCount >= 1 ? 'success' : 'danger'}">${fuelTypeCount}</span>)`);
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error('Error fetching brands:', error);
+                }
+            });
+        }
+
+        // Handle state change event
+        $('#state').on('change', function () {
+            var selectedState = $(this).val();
+            populateBrands(selectedState);
+        });
+    </script>
+
+
+    <!-- Filter Car -->
+    <script>
+        $(document).ready(function () {
+            // Handle filtering when the button is clicked
+            $('#filter_button').click(function () {
+                filterCars();
+            });
+
+            // Function to perform filtering
+            function filterCars() {
+                var formData = $('#filter-form').serialize();
+
+                // Make an AJAX request to the backend with the form data
+                $.ajax({
+                    url: "{% url 'cars:car_filter' %}",
+                    type: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        // Clear existing car list
+                        $('#car-list').empty();
+
+                        // Update car list with filtered data
+                        $.each(data.filtered_cars, function (index, car) {
+                            var carItem = `
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="car-item">
+                                        <div class="car-img">
+                                            <span class="car-status status-1">${car.status}</span>
+                                            <img src="${car.get_main_image}" style="height:150px; width:100%">
+                                            <div class="car-btns">
+                                                <a type="button" id="favorite-button" data-car-id="${car.slug}">
+                                                    ${car.favorited_by ? '<i class="fas fa-xmark" id="remove_favorite_icon"></i>' : '<i class="far fa-heart" id="add_favorite_icon"></i>'}
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="car-content">
+                                            <div class="car-top">
+                                                <h4><a href="/cars/${car.slug}">${car.get_car_name}</a></h4>
+                                            </div>
+                                            <ul class="car-list">
+                                                <li><i class="far fa-steering-wheel"></i>${car.transmission}</li>
+                                                <li><i class="far fa-road"></i>${car.power}</li>
+                                                <li><i class="far fa-car"></i>Model: ${car.model_year}</li>
+                                                <li><i class="far fa-gas-pump"></i>${car.fuel}</li>
+                                            </ul>
+                                            <div class="car-footer">
+                                                <span class="car-price">₦${car.price.toLocaleString()}</span>
+                                                <a href="/cars/${car.slug}" class="theme-btn"><span class="far fa-eye"></span>Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+
+                            $('#car-list').append(carItem);
+                        });
+                        console.log(data);
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+        });
+    </script>
 
 {% endblock %}
