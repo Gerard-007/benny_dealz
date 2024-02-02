@@ -103,7 +103,7 @@ POSTGRES_READY = str(config('POSTGRES_READY')) == "1"
 if DB_IS_AVAIL and POSTGRES_READY:
     DATABASES = {
         "default": {
-            'ENGINE': 'django.db.backends.postgresql',
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': DB_DATABASE,
             'USER': DB_USERNAME,
             'PASSWORD': DB_PASSWORD,

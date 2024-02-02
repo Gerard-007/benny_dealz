@@ -47,9 +47,9 @@ class Car(models.Model):
         help_text="Main image of the car",
         transformation={
             "quality": "auto:eco",
-            "width": 500,  # Specify the desired width
-            "height": 300,  # Specify the desired height
-            "crop": "fill",  # Specify the crop mode (fill, fit, etc.)
+            "width": 500,
+            "height": 300,
+            "crop": "fill",
         },
         resource_type="image",
     )
@@ -63,7 +63,6 @@ class Car(models.Model):
     price = models.DecimalField(max_digits=19, decimal_places=2)
     description = models.TextField()
     address = models.ForeignKey("dealers.DealerAddress", on_delete=models.DO_NOTHING, null=True)
-
     date = models.DateField(auto_now_add=True)
     is_featured = models.BooleanField(default=False)
     view_count = models.IntegerField(default=0)

@@ -13,7 +13,6 @@
 {% block content %}
     {% if cars %}
         <main class="main">
-
             <div class="car-area grid bg py-120">
                 <div class="container">
                     <div class="row">
@@ -26,42 +25,42 @@
 
                             <div class="row">
                                 {% for c in cars%}
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="car-item">
-                                        <div class="car-img">
-                                            <span class="car-status status-1">{{c.status}}</span>
-                                            <img src="{{c.main_image.url}}" style="height:150px; width:100%">
-                                            <div class="car-btns">
-                                                <a type="button" id="favorite-button" data-car-id="{{c.id}}">
-                                                    {% if request.user in c.favorited_by.all %}
-                                                        <i class="fas fa-xmark" id="remove_favorite_icon"></i>
-                                                    {% else %}
-                                                        <i class="far fa-heart" id="add_favorite_icon"></i>
-                                                    {% endif %}
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="car-content">
-                                            <div class="car-top">
-                                                <h4>
-                                                    <a href="{% url 'cars:detail' c.slug %}">
-                                                        {{c.brand}}-{{c.model}}-{{c.model_year}}
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="car-item">
+                                            <div class="car-img">
+                                                <span class="car-status status-1">{{c.status}}</span>
+                                                <img src="{{c.main_image.url}}" style="height:150px; width:100%">
+                                                <div class="car-btns">
+                                                    <a type="button" id="favorite-button" data-car-id="{{c.id}}">
+                                                        {% if request.user in c.favorited_by.all %}
+                                                            <i class="fas fa-xmark" id="remove_favorite_icon"></i>
+                                                        {% else %}
+                                                            <i class="far fa-heart" id="add_favorite_icon"></i>
+                                                        {% endif %}
                                                     </a>
-                                                </h4>
+                                                </div>
                                             </div>
-                                            <ul class="car-list">
-                                                <li><i class="far fa-steering-wheel"></i>{{c.transmission}}</li>
-                                                <li><i class="far fa-road"></i>{{c.power}}</li>
-                                                <li><i class="far fa-car"></i>Model: {{c.model_year}}</li>
-                                                <li><i class="far fa-gas-pump"></i>{{c.fuel}}</li>
-                                            </ul>
-                                            <div class="car-footer">
-                                                <span class="car-price">₦{{c.price|intcomma}}</span>
-                                                <a href="{% url 'cars:detail' c.slug %}" class="theme-btn"><span class="far fa-eye"></span>Details</a>
+                                            <div class="car-content">
+                                                <div class="car-top">
+                                                    <h4>
+                                                        <a href="{% url 'cars:detail' c.slug %}">
+                                                            {{c.brand}}-{{c.model}}-{{c.model_year}}
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <ul class="car-list">
+                                                    <li><i class="far fa-steering-wheel"></i>{{c.transmission}}</li>
+                                                    <li><i class="far fa-road"></i>{{c.power}}</li>
+                                                    <li><i class="far fa-car"></i>Model: {{c.model_year}}</li>
+                                                    <li><i class="far fa-gas-pump"></i>{{c.fuel}}</li>
+                                                </ul>
+                                                <div class="car-footer">
+                                                    <span class="car-price">₦{{c.price|intcomma}}</span>
+                                                    <a href="{% url 'cars:detail' c.slug %}" class="theme-btn"><span class="far fa-eye"></span>Details</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 {% endfor %}
                             </div>
 
@@ -72,7 +71,6 @@
                     </div>
                 </div>
             </div>
-
         </main>
     {% else %}
         <div class="download-area mb-120 mt-120">
