@@ -1,4 +1,5 @@
 FROM python:3.11.4-slim-bullseye
+
 WORKDIR /app
 
 ENV PYTHONUNBUFFERED 1
@@ -13,5 +14,9 @@ COPY ./requirements.txt /app/
 RUN pip install -r requirements.txt
 
 COPY . /app
+
+# Apply database migrations (optional)
+RUN python manage.py makemigrations
+RUN python manage.py migrate
 
 ENTRYPOINT [ "gunicorn", "benny_dealz.wsgi", "-b", "0.0.0.0:8000"]

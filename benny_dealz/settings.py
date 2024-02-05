@@ -111,7 +111,7 @@ if DB_IS_AVAIL and POSTGRES_READY:
             'PORT': DB_PORT
         }
     }
-print(DATABASES)
+# print(DATABASES)
 
 PROTOCOL = 'https'
 
