@@ -16,7 +16,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get("DEBUG", 1)))
 
-ALLOWED_HOSTS = ["*"] if DEBUG else [".vercel.app"]
+ALLOWED_HOSTS = ["*"]
 # CSRF_TRUSTED_ORIGIN = [f"https://{config('HOST_NAME')}"]
 
 # Application definition

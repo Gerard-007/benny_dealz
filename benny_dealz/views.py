@@ -40,12 +40,15 @@ class HomeView(View):
 
 
 class FilterCarView(View):
+    template_name = "pages/search.html"
+
     def get(self, request, *args, **kwargs):
         file_path = "benny_dealz/json_files/countries_states_cities.json"
         states = get_states(file_path, "Nigeria")
         context = {
             "states": states,
         }
+        return render(request, self.template_name, context)
 
     def post(self, request):
         condition = request.POST.get('condition')

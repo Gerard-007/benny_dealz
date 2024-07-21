@@ -35,7 +35,7 @@ class Wallet(models.Model):
 
 @receiver(post_save, sender=User)
 def create_wallet(sender, instance, created, **kwargs):
-    if instance.is_a_dealer:
+    if instance.is_a_dealer and not hasattr(instance, 'wallet'):
         Wallet.objects.create(user=instance)
         print("Wallet created!")
 

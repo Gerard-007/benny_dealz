@@ -38,7 +38,7 @@ class DealerDashboardView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class DealerCarListView(LoginRequiredMixin, View):
+class DealerCarListView(View):
     template_name = "dealers/dealer_car_list.html"
 
     def get(self, request):
@@ -50,7 +50,7 @@ class DealerCarListView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class DealerDetailView(LoginRequiredMixin, DetailView):
+class DealerDetailView(DetailView):
     template_name = "dealers/dealer_detail.html"
     context_object_name = 'dealer'
     model = Dealer

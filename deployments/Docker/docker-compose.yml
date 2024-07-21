@@ -13,7 +13,7 @@ services:
       - "8000:8000"
 
   nginx:
-    build: ../../nginx
+    build: ../nginx
     volumes:
       - static:/static
       - media:/media
